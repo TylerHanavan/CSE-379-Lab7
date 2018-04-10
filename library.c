@@ -1,9 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h> 
 
-
+int *enemies;
 
 void init() {
 	
-	
+	enemies = malloc(32*sizeof(int));
 	
 }
 
@@ -13,25 +15,45 @@ void init() {
 // ABOUT EACH ENEMY, SUCH AS id (bit 0-5), alive (bit 6), 
 // type (bit 7-8), x location (bit 9-13), y location (bit 14-18), 
 
-int is_invader_alive(int enemy) {
+int get_enemy(int i) {
+	return enemies[i];
+}
+
+int set_enemy(int i, int enemy) {
+	return (enemies[i] = enemy);
+}
+
+int is_enemy_alive(int enemy) {
 	
 	return (enemy & 0x40) >> 6 == 1;
 
 }
 
-int get_invader_type(int enemy) {
+// Set alive (alive = 1), set dead (alive = 0)
+int set_enemy_alive(int enemy, int alive) {
+	if(alive) return (enemy | (alive << 6));
+	return !(!enemy | (alive << 6));
+}
+
+int get_enemy_type(int enemy) {
 	
 	return (enemy & 0x180) >> 7;
 	
 }
 
-int get_invader_x(int enemy) {
+int set_enemy_type(int enemy, int type) {
+	
+	return (enemy & !(0x180)) & (type << 7);
+	
+}
+
+int get_enemy_x(int enemy) {
 	
 	return (enemy & 0x3E00) >> 9;
 	
 }
 
-int get_invader_y(int enemy) {
+int get_enemy_y(int enemy) {
 	
 	return (enemy & 0x7D000) >> 14;
 	
