@@ -8,11 +8,16 @@ void init() {
 }
 
 // ENEMY SHIPS (EXCLUDING MOTHER SHIP) \\
+
 // EACH ENEMY IS COMPOSED BY AN INT. THE INT (32-bit) STORES INFO
 // ABOUT EACH ENEMY, SUCH AS id (bit 0-5), alive (bit 6), 
 // type (bit 7), x location (bit 8-12), y location (bit 13-17), 
 
+int is_alive(int enemy) {
+	
+	return (enemy & 0x40) >> 6 == 1;
 
+}
 
 // WALLS \\
 
