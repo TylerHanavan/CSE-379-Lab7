@@ -1,13 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h> 
 
-int *enemies;
+int level_;
+int *enemies_;
 
-void init() {
+int player_x_;
+int player_y_;
+
+int score_total_;
+
+int *scores_;
+
+void init_game() {
 	
-	enemies = malloc(32*sizeof(int));
+	score_total_ = 0;
+	
+	scores_ = malloc(24*sizeof(int));
 	
 }
+
+void init_level(int level) {
+	
+	free(enemies_);
+	
+	level_ = level;
+	
+	enemies_ = malloc(35*sizeof(int));
+	
+	player_x_ = 0;
+	player_y_ = 0;
+	
+}
+
+// PLAYER \\
+
+// THE PLAYER IS COMPOSED BY AN INT. THE INT (32-bit) STORES INFO
+
 
 // ENEMY SHIPS (EXCLUDING MOTHER SHIP) \\
 
@@ -16,11 +44,11 @@ void init() {
 // type (bit 7-8), x location (bit 9-13), y location (bit 14-18), 
 
 int get_enemy(int i) {
-	return enemies[i];
+	return enemies_[i];
 }
 
 int set_enemy(int i, int enemy) {
-	return (enemies[i] = enemy);
+	return (enemies_[i] = enemy);
 }
 
 int is_enemy_alive(int enemy) {
@@ -31,8 +59,7 @@ int is_enemy_alive(int enemy) {
 
 // Set alive (alive = 1), set dead (alive = 0)
 int set_enemy_alive(int enemy, int alive) {
-	if(alive) return (enemy | (alive << 6));
-	return !(!enemy | (alive << 6));
+	return (enemy & !(0x40)) & (alive << 6);
 }
 
 int get_enemy_type(int enemy) {
@@ -53,9 +80,21 @@ int get_enemy_x(int enemy) {
 	
 }
 
+int set_enemy_x(int enemy, int x) {
+	
+	return (enemy & !(0x3E00)) & (x << 9);
+	
+}
+
 int get_enemy_y(int enemy) {
 	
-	return (enemy & 0x7D000) >> 14;
+	return (enemy & 0x7C000) >> 14;
+	
+}
+
+int set_enemy_y(int enemy, int x) {
+	
+	return (enemy & !(0x7C000)) & (x << 14);
 	
 }
 
