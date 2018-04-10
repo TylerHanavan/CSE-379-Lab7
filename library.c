@@ -13,10 +13,28 @@ void init() {
 // ABOUT EACH ENEMY, SUCH AS id (bit 0-5), alive (bit 6), 
 // type (bit 7-8), x location (bit 9-13), y location (bit 14-18), 
 
-int is_alive(int enemy) {
+int is_invader_alive(int enemy) {
 	
 	return (enemy & 0x40) >> 6 == 1;
 
+}
+
+int get_invader_type(int enemy) {
+	
+	return (enemy & 0x180) >> 7;
+	
+}
+
+int get_invader_x(int enemy) {
+	
+	return (enemy & 0x3E00) >> 9;
+	
+}
+
+int get_invader_y(int enemy) {
+	
+	return (enemy & 0x7D000) >> 14;
+	
 }
 
 // WALLS \\
