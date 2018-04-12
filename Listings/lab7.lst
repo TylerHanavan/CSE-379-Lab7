@@ -4,37 +4,39 @@
 ARM Macro Assembler    Page 1 
 
 
-    1 00000000                 AREA             interrupts, CODE, READWRITE
-    2 00000000         
-    3 00000000                 EXPORT           lab7
-    4 00000000         
-    5 00000000                 EXPORT           FIQ_Handler
-    6 00000000         
-    7 00000000                 EXTERN           uart_init
-    8 00000000                 EXTERN           pin_connect_block_setup_for_uar
+    1 00000000                 PRESERVE8
+    2 00000000                 AREA             interrupts, CODE, READWRITE
+    3 00000000         
+    4 00000000                 EXPORT           lab7
+    5 00000000         
+    6 00000000                 EXPORT           FIQ_Handler
+    7 00000000         
+    8 00000000                 EXTERN           uart_init
+    9 00000000                 EXTERN           pin_connect_block_setup_for_uar
 t0
-    9 00000000                 EXTERN           setup_pins
-   10 00000000                 EXTERN           validate_input
-   11 00000000                 EXTERN           change_display
-   12 00000000                 EXTERN           clear_display
-   13 00000000                 EXTERN           toggle_seven_seg
-   14 00000000                 EXTERN           read_character
-   15 00000000                 EXTERN           output_character
-   16 00000000                 EXTERN           output_string
-   17 00000000                 EXTERN           new_line
-   18 00000000         
-   19 00000000                 EXTERN           change_display_digit
-   20 00000000                 EXTERN           get_digit
-   21 00000000         
-   22 00000000                 EXTERN           from_ascii
-   23 00000000         
-   24 00000000                 EXTERN           store_input
-   25 00000000                 EXTERN           get_input
-   26 00000000                 EXTERN           clear_input
-   27 00000000         
-   28 00000000                 EXTERN           get_char_at
-   29 00000000         
-   30 00000000 50 72 65 
+   10 00000000                 EXTERN           setup_pins
+   11 00000000                 EXTERN           validate_input
+   12 00000000                 EXTERN           change_display
+   13 00000000                 EXTERN           clear_display
+   14 00000000                 EXTERN           toggle_seven_seg
+   15 00000000                 EXTERN           read_character
+   16 00000000                 EXTERN           output_character
+   17 00000000                 EXTERN           output_string
+   18 00000000                 EXTERN           new_line
+   19 00000000         
+   20 00000000                 EXTERN           change_display_digit
+   21 00000000                 EXTERN           get_digit
+   22 00000000         
+   23 00000000                 EXTERN           from_ascii
+   24 00000000         
+   25 00000000                 EXTERN           store_input
+   26 00000000                 EXTERN           get_input
+   27 00000000                 EXTERN           clear_input
+   28 00000000         
+   29 00000000                 EXTERN           get_char_at
+   30 00000000                 EXTERN           draw_board
+   31 00000000         
+   32 00000000 50 72 65 
               73 73 20 
               6D 6F 6D 
               65 6E 74 
@@ -61,14 +63,14 @@ t0
               6E 74 65 
               72 20 66 
               6F 75 72 
-              20 68 65 
-              78 61 64 
 
 
 
 ARM Macro Assembler    Page 2 
 
 
+              20 68 65 
+              78 61 64 
               65 63 69 
               6D 61 6C 
               20 6E 75 
@@ -106,314 +108,292 @@ ARM Macro Assembler    Page 2
  toggle seven segment display on or off. Enter four hexadecimal numbers, follow
 ed by [Enter], to change the display (if it is on). Press 'q' to exit program."
 ,0
-   31 000000BC                 ALIGN
-   32 000000BC         
-   33 000000BC         lab7
+   33 000000BC                 ALIGN
    34 000000BC         
-   35 000000BC E92D4000        STMFD            sp!, {lr}
-   36 000000C0         
-   37 000000C0 EBFFFFFE        BL               uart_init   ;setup the uart wit
+   35 000000BC         lab7
+   36 000000BC         
+   37 000000BC E92D4000        STMFD            sp!, {lr}
+   38 000000C0         
+   39 000000C0 EBFFFFFE        BL               uart_init   ;setup the uart wit
                                                             h its init subrouti
                                                             ne
-   38 000000C4 EBFFFFFE        BL               pin_connect_block_setup_for_uar
+   40 000000C4 EBFFFFFE        BL               pin_connect_block_setup_for_uar
 t0 
                                                             ;setup the pin conn
                                                             ect block
-   39 000000C8 EBFFFFFE        BL               setup_pins  ;setup pins require
+   41 000000C8 EBFFFFFE        BL               setup_pins  ;setup pins require
                                                             d for momentary pus
                                                             h button and seven 
                                                             segment display 
-   40 000000CC EB000008        BL               interrupt_init
-   41 000000D0 EBFFFFFE        BL               clear_display
-   42 000000D4         
-   43 000000D4 E3A09000        MOV              r9, #0
-   44 000000D8         
+   42 000000CC EB000008        BL               interrupt_init
+   43 000000D0 EBFFFFFE        BL               clear_display
+   44 000000D4         
 
 
 
 ARM Macro Assembler    Page 3 
 
 
-   45 000000D8 E3A08002        MOV              r8, #2
-   46 000000DC         
-   47 000000DC E59F4190        LDR              r4, =prompt
-   48 000000E0         
-   49 000000E0 EBFFFFFE        BL               output_string
-   50 000000E4         
-   51 000000E4         lab7_loop
+   45 000000D4 E3A09000        MOV              r9, #0
+   46 000000D8         
+   47 000000D8 E3A08002        MOV              r8, #2
+   48 000000DC         
+   49 000000DC E59F4154        LDR              r4, =prompt
+   50 000000E0         
+   51 000000E0 EBFFFFFE        BL               output_string
    52 000000E4         
-   53 000000E4         ;CMP r7, #5
-   54 000000E4         ;BGE lab7_end
-   55 000000E4         
-   56 000000E4 EAFFFFFE        B                lab7_loop
-   57 000000E8         
-   58 000000E8         lab7_end
+   53 000000E4         lab7_loop
+   54 000000E4         
+   55 000000E4         ;CMP r7, #5
+   56 000000E4         ;BGE lab7_end
+   57 000000E4         
+   58 000000E4 EAFFFFFE        B                lab7_loop
    59 000000E8         
-   60 000000E8 EBFFFFFE        BL               clear_display
-   61 000000EC         
-   62 000000EC E8BD4000        LDMFD            sp!,{lr}
-   63 000000F0         
-   64 000000F0 E12FFF1E        BX               lr
-   65 000000F4         
-   66 000000F4         
+   60 000000E8         lab7_end
+   61 000000E8         
+   62 000000E8 EBFFFFFE        BL               clear_display
+   63 000000EC         
+   64 000000EC E8BD4000        LDMFD            sp!,{lr}
+   65 000000F0         
+   66 000000F0 E12FFF1E        BX               lr
    67 000000F4         
-   68 000000F4         interrupt_init
+   68 000000F4         
    69 000000F4         
-   70 000000F4 E92D4007        STMFD            SP!, {r0-r2, lr} 
+   70 000000F4         interrupt_init
+   71 000000F4         
+   72 000000F4 E92D4007        STMFD            SP!, {r0-r2, lr} 
                                                             ; Save registers 
-   71 000000F8         
-   72 000000F8         ; Push button setup   
    73 000000F8         
-   74 000000F8 E59F0178        LDR              r0, =0xE002C000
-   75 000000FC         
-   76 000000FC E5901000        LDR              r1, [r0]
-   77 00000100         
-   78 00000100 E3811202        ORR              r1, r1, #0x20000000
-   79 00000104         
-   80 00000104 E3C11201        BIC              r1, r1, #0x10000000
-   81 00000108         
-   82 00000108 E5801000        STR              r1, [r0]    ; PINSEL0 bits 29:2
+   74 000000F8         ; Push button setup   
+   75 000000F8         
+   76 000000F8 E59F013C        LDR              r0, =0xE002C000
+   77 000000FC         
+   78 000000FC E5901000        LDR              r1, [r0]
+   79 00000100         
+   80 00000100 E3811202        ORR              r1, r1, #0x20000000
+   81 00000104         
+   82 00000104 E3C11201        BIC              r1, r1, #0x10000000
+   83 00000108         
+   84 00000108 E5801000        STR              r1, [r0]    ; PINSEL0 bits 29:2
                                                             8 = 10
-   83 0000010C         
-   84 0000010C         
-   85 0000010C         ;key board setup
-   86 0000010C E59F0168        LDR              r0, =0xE000C004
-   87 00000110         
-   88 00000110 E5901000        LDR              r1, [r0]
-   89 00000114         
-   90 00000114 E3811001        ORR              r1, r1, #0x1
-   91 00000118         
-   92 00000118 E5801000        STR              r1, [r0]
-   93 0000011C         
-   94 0000011C         
-   95 0000011C         ; Classify sources as IRQ or FIQ
+   85 0000010C         
+   86 0000010C         
+   87 0000010C         ;key board setup
+   88 0000010C E59F012C        LDR              r0, =0xE000C004
+   89 00000110         
+   90 00000110 E5901000        LDR              r1, [r0]
+   91 00000114         
+   92 00000114 E3811001        ORR              r1, r1, #0x1
+   93 00000118         
+   94 00000118 E5801000        STR              r1, [r0]
+   95 0000011C         
    96 0000011C         
-   97 0000011C E59F015C        LDR              r0, =0xFFFFF000
-   98 00000120         
-   99 00000120 E590100C        LDR              r1, [r0, #0xC]
-  100 00000124         
-  101 00000124 E59F2158        LDR              r2, =0x8050
+   97 0000011C         ; Classify sources as IRQ or FIQ
+   98 0000011C         
+   99 0000011C E59F0120        LDR              r0, =0xFFFFF000
+  100 00000120         
+  101 00000120 E590100C        LDR              r1, [r0, #0xC]
 
 
 
 ARM Macro Assembler    Page 4 
 
 
-  102 00000128         
-  103 00000128 E1811002        ORR              r1, r1, r2  ; External Interrup
+  102 00000124         
+  103 00000124 E59F211C        LDR              r2, =0x8050
+  104 00000128         
+  105 00000128 E1811002        ORR              r1, r1, r2  ; External Interrup
                                                             t 1
-  104 0000012C         
-  105 0000012C E580100C        STR              r1, [r0, #0xC]
-  106 00000130         
-  107 00000130         
+  106 0000012C         
+  107 0000012C E580100C        STR              r1, [r0, #0xC]
   108 00000130         
-  109 00000130         ; Enable Interrupts
+  109 00000130         
   110 00000130         
-  111 00000130 E59F0148        LDR              r0, =0xFFFFF000
-  112 00000134         
-  113 00000134 E5901010        LDR              r1, [r0, #0x10]
-  114 00000138         
-  115 00000138 E59F2144        LDR              r2, =0x8050
-  116 0000013C         
-  117 0000013C E1811002        ORR              r1, r1, r2  ; External Interrup
+  111 00000130         ; Enable Interrupts
+  112 00000130         
+  113 00000130 E59F010C        LDR              r0, =0xFFFFF000
+  114 00000134         
+  115 00000134 E5901010        LDR              r1, [r0, #0x10]
+  116 00000138         
+  117 00000138 E59F2108        LDR              r2, =0x8050
+  118 0000013C         
+  119 0000013C E1811002        ORR              r1, r1, r2  ; External Interrup
                                                             t 1
-  118 00000140         
-  119 00000140 E5801010        STR              r1, [r0, #0x10]
-  120 00000144         
-  121 00000144         
+  120 00000140         
+  121 00000140 E5801010        STR              r1, [r0, #0x10]
   122 00000144         
-  123 00000144         ; External Interrupt 1 setup for edge sensitive
+  123 00000144         
   124 00000144         
-  125 00000144 E59F013C        LDR              r0, =0xE01FC148
-  126 00000148         
-  127 00000148 E5901000        LDR              r1, [r0]
-  128 0000014C         
-  129 0000014C E3811002        ORR              r1, r1, #2  ; EINT1 = Edge Sens
+  125 00000144         ; External Interrupt 1 setup for edge sensitive
+  126 00000144         
+  127 00000144 E59F0100        LDR              r0, =0xE01FC148
+  128 00000148         
+  129 00000148 E5901000        LDR              r1, [r0]
+  130 0000014C         
+  131 0000014C E3811002        ORR              r1, r1, #2  ; EINT1 = Edge Sens
                                                             itive
-  130 00000150         
-  131 00000150 E5801000        STR              r1, [r0]
-  132 00000154         
-  133 00000154         ; External Timer 0 modify MR0
+  132 00000150         
+  133 00000150 E5801000        STR              r1, [r0]
   134 00000154         
-  135 00000154 E59F0130        LDR              r0, =0xE0004018
-  136 00000158         
-  137 00000158 E59F1130        LDR              r1, =110000
-  138 0000015C         
-  139 0000015C E5801000        STR              r1, [r0]
-  140 00000160         
-  141 00000160         
-  142 00000160         ; External Timer 0 MCR
+  135 00000154         ; External Timer 0 modify MR0
+  136 00000154         
+  137 00000154 E59F00F4        LDR              r0, =0xE0004018
+  138 00000158         
+  139 00000158 E59F10F4        LDR              r1, =110000
+  140 0000015C         
+  141 0000015C E5801000        STR              r1, [r0]
+  142 00000160         
   143 00000160         
-  144 00000160 E59F012C        LDR              r0, =0xE0004014
-  145 00000164         
-  146 00000164 E5901000        LDR              r1, [r0]
-  147 00000168         
-  148 00000168         ;ORR r1, r1, #3
-  149 00000168         ;ORR r1, r1, #8
-  150 00000168 E3811003        ORR              r1, r1, #0x3
-  151 0000016C E3C11020        BIC              r1, r1, #0x20
-  152 00000170         
-  153 00000170 E5801000        STR              r1, [r0]
-  154 00000174         
-  155 00000174         ; External Timer 0 timer control register
+  144 00000160         ; External Timer 0 MCR
+  145 00000160         
+  146 00000160 E59F00F0        LDR              r0, =0xE0004014
+  147 00000164         
+  148 00000164 E5901000        LDR              r1, [r0]
+  149 00000168         
+  150 00000168         ;ORR r1, r1, #3
+  151 00000168         ;ORR r1, r1, #8
+  152 00000168 E3811003        ORR              r1, r1, #0x3
+  153 0000016C E3C11020        BIC              r1, r1, #0x20
+  154 00000170         
+  155 00000170 E5801000        STR              r1, [r0]
   156 00000174         
-  157 00000174 E59F011C        LDR              r0, =0xE0004004
+  157 00000174         ; External Timer 0 timer control register
 
 
 
 ARM Macro Assembler    Page 5 
 
 
-  158 00000178         
-  159 00000178 E5901000        LDR              r1, [r0]
-  160 0000017C         
-  161 0000017C E3811001        ORR              r1, r1, #1
-  162 00000180         
-  163 00000180 E5801000        STR              r1, [r0]
-  164 00000184         
-  165 00000184         ; Enable FIQ's, Disable IRQ's
+  158 00000174         
+  159 00000174 E59F00E0        LDR              r0, =0xE0004004
+  160 00000178         
+  161 00000178 E5901000        LDR              r1, [r0]
+  162 0000017C         
+  163 0000017C E3811001        ORR              r1, r1, #1
+  164 00000180         
+  165 00000180 E5801000        STR              r1, [r0]
   166 00000184         
-  167 00000184 E10F0000        MRS              r0, CPSR
-  168 00000188         
-  169 00000188 E3C00040        BIC              r0, r0, #0x40
-  170 0000018C         
-  171 0000018C E3800080        ORR              r0, r0, #0x80
-  172 00000190         
-  173 00000190 E121F000        MSR              CPSR_c, r0
-  174 00000194         
-  175 00000194         
+  167 00000184         ; Enable FIQ's, Disable IRQ's
+  168 00000184         
+  169 00000184 E10F0000        MRS              r0, CPSR
+  170 00000188         
+  171 00000188 E3C00040        BIC              r0, r0, #0x40
+  172 0000018C         
+  173 0000018C E3800080        ORR              r0, r0, #0x80
+  174 00000190         
+  175 00000190 E121F000        MSR              CPSR_c, r0
   176 00000194         
-  177 00000194 E8BD4007        LDMFD            SP!, {r0-r2, lr} 
+  177 00000194         
+  178 00000194         
+  179 00000194 E8BD4007        LDMFD            SP!, {r0-r2, lr} 
                                                             ; Restore registers
                                                             
-  178 00000198         
-  179 00000198 E12FFF1E        BX               lr          ; Return
-  180 0000019C         
-  181 0000019C         FIQ_Handler
+  180 00000198         
+  181 00000198 E12FFF1E        BX               lr          ; Return
   182 0000019C         
-  183 0000019C E92D401F        STMFD            SP!, {r0, r1, r2, r3, r4, lr} 
+  183 0000019C         FIQ_Handler
+  184 0000019C         
+  185 0000019C E92D401F        STMFD            SP!, {r0, r1, r2, r3, r4, lr} 
                                                             ; Save registers
-  184 000001A0         
-  185 000001A0 E59F00F4        LDR              r0, =0xE0004000
-  186 000001A4 E5901000        LDR              r1, [r0]
-  187 000001A8 E3510000        CMP              r1, #0
-  188 000001AC CA000000        BGT              TIMER0
-  189 000001B0 EA00001B        B                EINT1
-  190 000001B4         
-  191 000001B4         TIMER0
+  186 000001A0         
+  187 000001A0 E59F00B8        LDR              r0, =0xE0004000
+  188 000001A4 E5901000        LDR              r1, [r0]
+  189 000001A8 E3510000        CMP              r1, #0
+  190 000001AC CA000000        BGT              TIMER0
+  191 000001B0 EA00000C        B                EINT1
   192 000001B4         
-  193 000001B4 E3811001        ORR              r1, r1, #1
-  194 000001B8 E5801000        STR              r1, [r0]
-  195 000001BC         
-  196 000001BC E3A00030        MOV              r0, #0x30
-  197 000001C0 EBFFFFFE        BL               output_character
-  198 000001C4         
-  199 000001C4 E3A00000        MOV              r0, #0x0
-  200 000001C8 E3A01000        MOV              r1, #0x0
-  201 000001CC         
-  202 000001CC         TIMER0LOOP
-  203 000001CC         
-  204 000001CC E59F20CC        LDR              r2, =get_char_at
-  205 000001D0 E1A0E00F        MOV              lr, pc
-  206 000001D4 E12FFF12        BX               r2
-  207 000001D8         
-  208 000001D8 EBFFFFFE        BL               output_character
-  209 000001DC         
-  210 000001DC E2800001        ADD              r0, #0x1
-  211 000001E0         
-  212 000001E0 E3500016        CMP              r0, #22
-  213 000001E4 0A000007        BEQ              R0_RESET
+  193 000001B4         TIMER0
+  194 000001B4         
+  195 000001B4 E3811001        ORR              r1, r1, #1
+  196 000001B8 E5801000        STR              r1, [r0]
+  197 000001BC         
+  198 000001BC         TIMER0LOOP
+  199 000001BC         
+  200 000001BC E59F20A0        LDR              r2, =draw_board
+  201 000001C0 E1A0E00F        MOV              lr, pc
+  202 000001C4 E12FFF12        BX               r2
+  203 000001C8         
+  204 000001C8 EA000014        B                FIQ_Exit
+  205 000001CC         
+  206 000001CC         R0_RESET
+  207 000001CC E92D4000        STMFD            SP!, {lr}
+  208 000001D0 E3A00000        MOV              r0, #0x0
+  209 000001D4 E2811001        ADD              r1, #0x1
+  210 000001D8 EBFFFFFE        BL               new_line
+  211 000001DC E8BD4000        LDMFD            SP!, {lr}
+  212 000001E0 E12FFF1E        BX               lr
+  213 000001E4         
 
 
 
 ARM Macro Assembler    Page 6 
 
 
-  214 000001E8         
-  215 000001E8 E3510010        CMP              r1, #16
-  216 000001EC 1AFFFFF6        BNE              TIMER0LOOP
-  217 000001F0         
-  218 000001F0 EBFFFFFE        BL               new_line
-  219 000001F4 EBFFFFFE        BL               new_line
-  220 000001F8 EBFFFFFE        BL               new_line
-  221 000001FC EBFFFFFE        BL               new_line
-  222 00000200 EBFFFFFE        BL               new_line
-  223 00000204         
-  224 00000204 EA000014        B                FIQ_Exit
-  225 00000208         
-  226 00000208         R0_RESET
-  227 00000208 E92D4000        STMFD            SP!, {lr}
-  228 0000020C E3A00000        MOV              r0, #0x0
-  229 00000210 E2811001        ADD              r1, #0x1
-  230 00000214 EBFFFFFE        BL               new_line
-  231 00000218 E8BD4000        LDMFD            SP!, {lr}
-  232 0000021C E12FFF1E        BX               lr
-  233 00000220         
-  234 00000220 EA00000D        B                FIQ_Exit
-  235 00000224         
-  236 00000224         EINT1                                ; Check for EINT1 i
+  214 000001E4 EA00000D        B                FIQ_Exit
+  215 000001E8         
+  216 000001E8         EINT1                                ; Check for EINT1 i
                                                             nterrupt
-  237 00000224         
-  238 00000224         
-  239 00000224 E59F0078        LDR              r0, =0xE01FC140
-  240 00000228         
-  241 00000228 E5901000        LDR              r1, [r0]
-  242 0000022C         
-  243 0000022C E3110002        TST              r1, #2
-  244 00000230         
-  245 00000230 0A000003        BEQ              FIQ_Keys
-  246 00000234         
-  247 00000234 EBFFFFFE        BL               toggle_seven_seg
-  248 00000238         
-  249 00000238 E3811002        ORR              r1, r1, #2  ; Clear Interrupt
-  250 0000023C         
-  251 0000023C E5801000        STR              r1, [r0]
-  252 00000240         
-  253 00000240 EA000005        B                FIQ_Exit
-  254 00000244         
-  255 00000244         FIQ_Keys
-  256 00000244         
-  257 00000244 E59F005C        LDR              r0, =0xE000C008
-  258 00000248         
-  259 00000248 E5901000        LDR              r1, [r0]
-  260 0000024C         
-  261 0000024C E2012001        AND              r2, r1, #1
-  262 00000250         
-  263 00000250 E3520000        CMP              r2, #0
-  264 00000254         
-  265 00000254 1A000000        BNE              FIQ_Exit
-  266 00000258         
-  267 00000258 EBFFFFFE        BL               read_character
-  268 0000025C         
-  269 0000025C         quit_skip
-  270 0000025C         
-  271 0000025C         FIQ_Exit
-
-
-
-ARM Macro Assembler    Page 7 
-
-
-  272 0000025C         
-  273 0000025C E59F0038        LDR              r0, =0xE0004000
-  274 00000260 E5901000        LDR              r1, [r0]
-  275 00000264         
-  276 00000264 E3C11001        BIC              r1, r1, #1
-  277 00000268 E5801000        STR              r1, [r0]
-  278 0000026C         
-  279 0000026C E8BD401F        LDMFD            SP!, {r0, r1, r2, r3, r4, lr}
-  280 00000270         
-  281 00000270 E25EF004        SUBS             pc, lr, #4
-  282 00000274         
-  283 00000274         
-  284 00000274         
-  285 00000274                 END
+  217 000001E8         
+  218 000001E8         
+  219 000001E8 E59F0078        LDR              r0, =0xE01FC140
+  220 000001EC         
+  221 000001EC E5901000        LDR              r1, [r0]
+  222 000001F0         
+  223 000001F0 E3110002        TST              r1, #2
+  224 000001F4         
+  225 000001F4 0A000003        BEQ              FIQ_Keys
+  226 000001F8         
+  227 000001F8 EBFFFFFE        BL               toggle_seven_seg
+  228 000001FC         
+  229 000001FC E3811002        ORR              r1, r1, #2  ; Clear Interrupt
+  230 00000200         
+  231 00000200 E5801000        STR              r1, [r0]
+  232 00000204         
+  233 00000204 EA000005        B                FIQ_Exit
+  234 00000208         
+  235 00000208         FIQ_Keys
+  236 00000208         
+  237 00000208 E59F005C        LDR              r0, =0xE000C008
+  238 0000020C         
+  239 0000020C E5901000        LDR              r1, [r0]
+  240 00000210         
+  241 00000210 E2012001        AND              r2, r1, #1
+  242 00000214         
+  243 00000214 E3520000        CMP              r2, #0
+  244 00000218         
+  245 00000218 1A000000        BNE              FIQ_Exit
+  246 0000021C         
+  247 0000021C EBFFFFFE        BL               read_character
+  248 00000220         
+  249 00000220         quit_skip
+  250 00000220         
+  251 00000220         FIQ_Exit
+  252 00000220         
+  253 00000220 E59F0038        LDR              r0, =0xE0004000
+  254 00000224 E5901000        LDR              r1, [r0]
+  255 00000228         
+  256 00000228 E3C11001        BIC              r1, r1, #1
+  257 0000022C E5801000        STR              r1, [r0]
+  258 00000230         
+  259 00000230 E8BD401F        LDMFD            SP!, {r0, r1, r2, r3, r4, lr}
+  260 00000234         
+  261 00000234 E25EF004        SUBS             pc, lr, #4
+  262 00000238         
+  263 00000238         
+  264 00000238         
+  265 00000238                 END
               00000000 
               E002C000 
               E000C004 
               FFFFF000 
               00008050 
               E01FC148 
+
+
+
+ARM Macro Assembler    Page 7 
+
+
               E0004018 
               0001ADB0 
               E0004014 
@@ -432,65 +412,65 @@ IS\Include -IC:\Keil_v5\ARM\INC\Philips --predefine="__EVAL SETA 1" --predefine
 ARM Macro Assembler    Page 1 Alphabetic symbol ordering
 Relocatable symbols
 
-EINT1 00000224
+EINT1 000001E8
 
 Symbol: EINT1
    Definitions
-      At line 236 in file lab7.s
+      At line 216 in file lab7.s
    Uses
-      At line 189 in file lab7.s
+      At line 191 in file lab7.s
 Comment: EINT1 used once
-FIQ_Exit 0000025C
+FIQ_Exit 00000220
 
 Symbol: FIQ_Exit
    Definitions
-      At line 271 in file lab7.s
+      At line 251 in file lab7.s
    Uses
-      At line 224 in file lab7.s
-      At line 234 in file lab7.s
-      At line 253 in file lab7.s
-      At line 265 in file lab7.s
+      At line 204 in file lab7.s
+      At line 214 in file lab7.s
+      At line 233 in file lab7.s
+      At line 245 in file lab7.s
 
 FIQ_Handler 0000019C
 
 Symbol: FIQ_Handler
    Definitions
-      At line 181 in file lab7.s
+      At line 183 in file lab7.s
    Uses
-      At line 5 in file lab7.s
+      At line 6 in file lab7.s
 Comment: FIQ_Handler used once
-FIQ_Keys 00000244
+FIQ_Keys 00000208
 
 Symbol: FIQ_Keys
    Definitions
-      At line 255 in file lab7.s
+      At line 235 in file lab7.s
    Uses
-      At line 245 in file lab7.s
+      At line 225 in file lab7.s
 Comment: FIQ_Keys used once
-R0_RESET 00000208
+R0_RESET 000001CC
 
 Symbol: R0_RESET
    Definitions
-      At line 226 in file lab7.s
+      At line 206 in file lab7.s
    Uses
-      At line 213 in file lab7.s
-Comment: R0_RESET used once
+      None
+Comment: R0_RESET unused
 TIMER0 000001B4
 
 Symbol: TIMER0
    Definitions
-      At line 191 in file lab7.s
+      At line 193 in file lab7.s
    Uses
-      At line 188 in file lab7.s
+      At line 190 in file lab7.s
 Comment: TIMER0 used once
-TIMER0LOOP 000001CC
+TIMER0LOOP 000001BC
 
 Symbol: TIMER0LOOP
    Definitions
-      At line 202 in file lab7.s
+      At line 198 in file lab7.s
    Uses
-      At line 216 in file lab7.s
-Comment: TIMER0LOOP used once
+      None
+Comment: TIMER0LOOP unused
 
 
 
@@ -501,15 +481,15 @@ interrupt_init 000000F4
 
 Symbol: interrupt_init
    Definitions
-      At line 68 in file lab7.s
+      At line 70 in file lab7.s
    Uses
-      At line 40 in file lab7.s
+      At line 42 in file lab7.s
 Comment: interrupt_init used once
 interrupts 00000000
 
 Symbol: interrupts
    Definitions
-      At line 1 in file lab7.s
+      At line 2 in file lab7.s
    Uses
       None
 Comment: interrupts unused
@@ -517,15 +497,15 @@ lab7 000000BC
 
 Symbol: lab7
    Definitions
-      At line 33 in file lab7.s
+      At line 35 in file lab7.s
    Uses
-      At line 3 in file lab7.s
+      At line 4 in file lab7.s
 Comment: lab7 used once
 lab7_end 000000E8
 
 Symbol: lab7_end
    Definitions
-      At line 58 in file lab7.s
+      At line 60 in file lab7.s
    Uses
       None
 Comment: lab7_end unused
@@ -533,23 +513,23 @@ lab7_loop 000000E4
 
 Symbol: lab7_loop
    Definitions
-      At line 51 in file lab7.s
+      At line 53 in file lab7.s
    Uses
-      At line 56 in file lab7.s
+      At line 58 in file lab7.s
 Comment: lab7_loop used once
 prompt 00000000
 
 Symbol: prompt
    Definitions
-      At line 30 in file lab7.s
+      At line 32 in file lab7.s
    Uses
-      At line 47 in file lab7.s
+      At line 49 in file lab7.s
 Comment: prompt used once
-quit_skip 0000025C
+quit_skip 00000220
 
 Symbol: quit_skip
    Definitions
-      At line 269 in file lab7.s
+      At line 249 in file lab7.s
    Uses
       None
 Comment: quit_skip unused
@@ -564,7 +544,7 @@ change_display 00000000
 
 Symbol: change_display
    Definitions
-      At line 11 in file lab7.s
+      At line 12 in file lab7.s
    Uses
       None
 Comment: change_display unused
@@ -572,7 +552,7 @@ change_display_digit 00000000
 
 Symbol: change_display_digit
    Definitions
-      At line 19 in file lab7.s
+      At line 20 in file lab7.s
    Uses
       None
 Comment: change_display_digit unused
@@ -580,24 +560,32 @@ clear_display 00000000
 
 Symbol: clear_display
    Definitions
-      At line 12 in file lab7.s
+      At line 13 in file lab7.s
    Uses
-      At line 41 in file lab7.s
-      At line 60 in file lab7.s
+      At line 43 in file lab7.s
+      At line 62 in file lab7.s
 
 clear_input 00000000
 
 Symbol: clear_input
    Definitions
-      At line 26 in file lab7.s
+      At line 27 in file lab7.s
    Uses
       None
 Comment: clear_input unused
+draw_board 00000000
+
+Symbol: draw_board
+   Definitions
+      At line 30 in file lab7.s
+   Uses
+      At line 200 in file lab7.s
+Comment: draw_board used once
 from_ascii 00000000
 
 Symbol: from_ascii
    Definitions
-      At line 22 in file lab7.s
+      At line 23 in file lab7.s
    Uses
       None
 Comment: from_ascii unused
@@ -605,19 +593,11 @@ get_char_at 00000000
 
 Symbol: get_char_at
    Definitions
-      At line 28 in file lab7.s
-   Uses
-      At line 204 in file lab7.s
-Comment: get_char_at used once
-get_digit 00000000
-
-Symbol: get_digit
-   Definitions
-      At line 20 in file lab7.s
+      At line 29 in file lab7.s
    Uses
       None
-Comment: get_digit unused
-get_input 00000000
+Comment: get_char_at unused
+get_digit 00000000
 
 
 
@@ -625,9 +605,17 @@ get_input 00000000
 ARM Macro Assembler    Page 2 Alphabetic symbol ordering
 External symbols
 
+Symbol: get_digit
+   Definitions
+      At line 21 in file lab7.s
+   Uses
+      None
+Comment: get_digit unused
+get_input 00000000
+
 Symbol: get_input
    Definitions
-      At line 25 in file lab7.s
+      At line 26 in file lab7.s
    Uses
       None
 Comment: get_input unused
@@ -635,67 +623,61 @@ new_line 00000000
 
 Symbol: new_line
    Definitions
-      At line 17 in file lab7.s
+      At line 18 in file lab7.s
    Uses
-      At line 218 in file lab7.s
-      At line 219 in file lab7.s
-      At line 220 in file lab7.s
-      At line 221 in file lab7.s
-      At line 222 in file lab7.s
-      At line 230 in file lab7.s
-
+      At line 210 in file lab7.s
+Comment: new_line used once
 output_character 00000000
 
 Symbol: output_character
    Definitions
-      At line 15 in file lab7.s
+      At line 16 in file lab7.s
    Uses
-      At line 197 in file lab7.s
-      At line 208 in file lab7.s
-
+      None
+Comment: output_character unused
 output_string 00000000
 
 Symbol: output_string
    Definitions
-      At line 16 in file lab7.s
+      At line 17 in file lab7.s
    Uses
-      At line 49 in file lab7.s
+      At line 51 in file lab7.s
 Comment: output_string used once
 pin_connect_block_setup_for_uart0 00000000
 
 Symbol: pin_connect_block_setup_for_uart0
    Definitions
-      At line 8 in file lab7.s
+      At line 9 in file lab7.s
    Uses
-      At line 38 in file lab7.s
+      At line 40 in file lab7.s
 Comment: pin_connect_block_setup_for_uart0 used once
 read_character 00000000
 
 Symbol: read_character
    Definitions
-      At line 14 in file lab7.s
+      At line 15 in file lab7.s
    Uses
-      At line 267 in file lab7.s
+      At line 247 in file lab7.s
 Comment: read_character used once
 setup_pins 00000000
 
 Symbol: setup_pins
    Definitions
-      At line 9 in file lab7.s
-   Uses
-      At line 39 in file lab7.s
+      At line 10 in file lab7.s
 
 
 
 ARM Macro Assembler    Page 3 Alphabetic symbol ordering
 External symbols
 
+   Uses
+      At line 41 in file lab7.s
 Comment: setup_pins used once
 store_input 00000000
 
 Symbol: store_input
    Definitions
-      At line 24 in file lab7.s
+      At line 25 in file lab7.s
    Uses
       None
 Comment: store_input unused
@@ -703,25 +685,25 @@ toggle_seven_seg 00000000
 
 Symbol: toggle_seven_seg
    Definitions
-      At line 13 in file lab7.s
+      At line 14 in file lab7.s
    Uses
-      At line 247 in file lab7.s
+      At line 227 in file lab7.s
 Comment: toggle_seven_seg used once
 uart_init 00000000
 
 Symbol: uart_init
    Definitions
-      At line 7 in file lab7.s
+      At line 8 in file lab7.s
    Uses
-      At line 37 in file lab7.s
+      At line 39 in file lab7.s
 Comment: uart_init used once
 validate_input 00000000
 
 Symbol: validate_input
    Definitions
-      At line 10 in file lab7.s
+      At line 11 in file lab7.s
    Uses
       None
 Comment: validate_input unused
-18 symbols
-366 symbols in table
+19 symbols
+367 symbols in table

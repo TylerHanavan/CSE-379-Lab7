@@ -1,3 +1,4 @@
+	PRESERVE8
 	AREA interrupts, CODE, READWRITE
 
 	EXPORT lab7
@@ -26,6 +27,7 @@
 	EXTERN clear_input
 		
 	EXTERN get_char_at
+	EXTERN draw_board
 
 prompt = "Press momentary push button to toggle seven segment display on or off. Enter four hexadecimal numbers, followed by [Enter], to change the display (if it is on). Press 'q' to exit program.",0
     ALIGN
@@ -193,33 +195,11 @@ TIMER0
 	ORR r1, r1, #1
 	STR r1, [r0]
 	
-	MOV r0, #0x30
-	BL output_character
-	
-	MOV r0, #0x0
-	MOV r1, #0x0
-	
 TIMER0LOOP
 	
-	LDR r2, =get_char_at
+	LDR r2, =draw_board
 	MOV lr, pc
 	BX r2
-	
-	BL output_character
-	
-	ADD r0, #0x1
-	
-	CMP r0, #22
-	BEQ R0_RESET
-	
-	CMP r1, #16
-	BNE TIMER0LOOP
-	
-	BL new_line
-	BL new_line
-	BL new_line
-	BL new_line
-	BL new_line
 	
 	B FIQ_Exit
 	

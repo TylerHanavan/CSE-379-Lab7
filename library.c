@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h> 
 
+extern void output_character(char c);
+
 int level_;
 int *enemies_;
 
@@ -15,20 +17,35 @@ void init_game() {
 	
 	score_total_ = 0;
 	
-	scores_ = malloc(24*sizeof(int));
+	scores_ =  (int *) malloc(sizeof(int) * 24);
+	
+	for (int i=0; i<24; ++i)
+		scores_[i] = i;
 	
 }
 
 void init_level(int level) {
 	
-	free(enemies_);
-	
 	level_ = level;
 	
-	enemies_ = malloc(35*sizeof(int));
+	enemies_ =  (int *) malloc(sizeof(int) * 35);
+	
+	for (int i=0; i<35; ++i)
+		enemies_[i] = i;
 	
 	player_x_ = 0;
 	player_y_ = 0;
+	
+}
+
+int pseudo_printf(char c[]) {
+	
+	while (*c != '\0') {
+		output_character(*c);
+		c++;
+	}
+	
+	return 0;
 	
 }
 
@@ -124,25 +141,48 @@ int is_wall_horizontal(int x, int y) {
 
 // GAME BOARD \\
 
-unsigned char get_char_at(int x, int y) {
+char* get_char_at(int x, int y) {
 	
-	printf("x %d, y %d", x, y);
+	//pseudo_printf("test\n\0");
 	
-	if(is_wall_horizontal(x, y)) return '-';
-	if(is_wall_vertical(x, y)) return '|';
+	if(is_wall_vertical(x, y)) return "|\0";
+	if(is_wall_horizontal(x, y)) return "-\0";
 	
 	int e = get_enemy_at(x, y);
 	
 	if(e != -1) {
 		
-		if(get_enemy_type(e) == 0) return 'W';
-		if(get_enemy_type(e) == 1) return 'M';
-		if(get_enemy_type(e) == 2) return 'O';
+		if(get_enemy_type(e) == 0) return "W\0";
+		if(get_enemy_type(e) == 1) return "M\0";
+		if(get_enemy_type(e) == 2) return "O\0";
 		
 	}
 	
-	if(player_x_ == x && player_y_ == y) return 'A';
+	if(player_x_ == x && player_y_ == y) return "A\0";
 	
-	return ' ';
+	return " \0";
+	
+}
+
+void draw_board() {
+	
+	for(int i = 0; i < 21; i++) {
+		for(int j = 0; j < 16; j++) {
+			
+			pseudo_printf(get_char_at(i, j));
+			
+		}
+	}
+	
+}
+
+// UTIL FUNCTIONS \\
+
+unsigned char get_from_ascii(char c) {
+	
+	if(c <= 0x39) 
+		return c - 0x30;
+	
+	return c - 0x41 + 10;
 	
 }
