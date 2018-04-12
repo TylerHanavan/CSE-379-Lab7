@@ -125,7 +125,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>1</UseSimulator>
+            <UseSimulator>0</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -137,7 +137,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>0</UseTarget>
+            <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -296,17 +296,17 @@
                 <Size>0x0</Size>
               </XRAM>
               <OCR_RVCT1>
-                <Type>0</Type>
+                <Type>1</Type>
                 <StartAddress>0x0</StartAddress>
                 <Size>0x0</Size>
               </OCR_RVCT1>
               <OCR_RVCT2>
-                <Type>0</Type>
+                <Type>1</Type>
                 <StartAddress>0x0</StartAddress>
                 <Size>0x0</Size>
               </OCR_RVCT2>
               <OCR_RVCT3>
-                <Type>0</Type>
+                <Type>1</Type>
                 <StartAddress>0x0</StartAddress>
                 <Size>0x0</Size>
               </OCR_RVCT3>
@@ -316,7 +316,7 @@
                 <Size>0x80000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
-                <Type>0</Type>
+                <Type>1</Type>
                 <StartAddress>0x0</StartAddress>
                 <Size>0x0</Size>
               </OCR_RVCT5>
@@ -397,7 +397,7 @@
             </VariousControls>
           </Aads>
           <LDads>
-            <umfTarg>0</umfTarg>
+            <umfTarg>1</umfTarg>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>

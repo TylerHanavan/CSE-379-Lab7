@@ -34,8 +34,7 @@ void init_level(int level) {
 
 // PLAYER \\
 
-// THE PLAYER IS COMPOSED BY AN INT. THE INT (32-bit) STORES INFO
-
+// TODO: Insert functions for player manipulation
 
 // ENEMY SHIPS (EXCLUDING MOTHER SHIP) \\
 
