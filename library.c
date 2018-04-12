@@ -97,6 +97,21 @@ int set_enemy_y(int enemy, int x) {
 	
 }
 
+int get_enemy_at(int x, int y) {
+	
+	for(int i = 0; i < 34; i++) {
+		
+		int e = enemies_[i];
+		
+		if(get_enemy_x(e) == x && get_enemy_y(e) == y)
+			return e;
+		
+	}
+	
+	return -1;
+	
+}
+
 // WALLS \\
 
 int is_wall_vertical(int x, int y) {
@@ -105,4 +120,27 @@ int is_wall_vertical(int x, int y) {
 
 int is_wall_horizontal(int x, int y) {
 	return !is_wall_vertical(x, y) && (y == 0 || y == 22);
+}
+
+// GAME BOARD \\
+
+unsigned char get_char_at(int x, int y) {
+	
+	if(is_wall_horizontal(x, y)) return '-';
+	if(is_wall_vertical(x, y)) return '|';
+	
+	int e = get_enemy_at(x, y);
+	
+	if(e != -1) {
+		
+		if(get_enemy_type(e) == 0) return 'W';
+		if(get_enemy_type(e) == 1) return 'M';
+		if(get_enemy_type(e) == 2) return 'O';
+		
+	}
+	
+	if(player_x_ == x && player_y_ == y) return 'A';
+	
+	return ' ';
+	
 }

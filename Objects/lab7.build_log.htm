@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.24.2.0
 Copyright (C) 2017 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: u b, ub, LIC=----
+License Information: U B, UB, LIC=----
  
 Tool Versions:
 Toolchain:       MDK-Lite  Version: 5.24.1
@@ -27,8 +27,15 @@ Project File Date:  04/10/2018
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-".\Objects\lab7.axf" - 0 Error(s), 0 Warning(s).
-Build Time Elapsed:  00:00:03
+assembling lab7.s...
+lab7.s(199): warning: A1865W: '#' not seen before constant expression
+lab7.s(200): warning: A1865W: '#' not seen before constant expression
+linking...
+.\Objects\lab7.axf: Warning: L6306W: '~PRES8 (The user did not require code to preserve 8-byte data objects)' section lab7.o(interrupts) should not use the address of 'REQ8 (Code was permitted to depend on the 8-byte aligment of 8-byte data items)' function get_char_at.
+Program Size: Code=2964 RO-data=32 RW-data=24 ZI-data=1256  
+Finished: 0 information, 1 warning and 0 error messages.
+".\Objects\lab7.axf" - 0 Error(s), 3 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

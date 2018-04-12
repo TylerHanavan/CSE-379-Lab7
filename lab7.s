@@ -24,6 +24,8 @@
 	EXTERN store_input
 	EXTERN get_input
 	EXTERN clear_input
+		
+	EXTERN get_char_at
 
 prompt = "Press momentary push button to toggle seven segment display on or off. Enter four hexadecimal numbers, followed by [Enter], to change the display (if it is on). Press 'q' to exit program.",0
     ALIGN
@@ -191,6 +193,17 @@ TIMER0
 	ORR r1, r1, #1
 	STR r1, [r0]
 	
+	MOV r0, #0x30
+	BL output_character
+	
+	MOV r0, 0x0
+	MOV r1, 0x0
+	LDR r2, =get_char_at
+	MOV lr, pc
+	BX r2
+	
+	BL output_character
+	
 	B FIQ_Exit
 
 EINT1			; Check for EINT1 interrupt
@@ -225,72 +238,6 @@ FIQ_Keys
 	BNE FIQ_Exit
 
 	BL read_character
-	BL validate_input
-
-	CMP r4, #1				;is input valid?
-	BNE quit_skip				;branch away if not
-
-	CMP r0, #0x71
-	BEQ quit_skip
-
-	BL output_character
-
-	CMP r0, #0xD
-	BEQ key_enter
-
-	BL store_input
-	
-	B quit_skip
-
-key_enter
-	
-	BL new_line
-	
-	LDR r4, =char1
-	BL output_string
-	
-	MOV r0, #0
-	
-	BL get_input
-	
-	BL output_character
-	
-	BL new_line
-	
-	LDR r4, =char2
-	BL output_string
-	
-	MOV r0, #1
-	
-	BL get_input
-	
-	BL output_character
-	
-	BL new_line
-	
-	LDR r4, =char3
-	BL output_string
-	
-	MOV r0, #2
-	
-	BL get_input
-	
-	BL output_character
-	
-	BL new_line
-	
-	LDR r4, =char4
-	BL output_string
-	
-	MOV r0, #3
-	
-	BL get_input
-	
-	BL output_character
-	
-	BL new_line
-	
-	BL clear_input
 
 quit_skip
 
