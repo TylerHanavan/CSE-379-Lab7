@@ -308,8 +308,8 @@ ARM Macro Assembler    Page 5
   196 000001BC E3A00030        MOV              r0, #0x30
   197 000001C0 EBFFFFFE        BL               output_character
   198 000001C4         
-  199 000001C4 E3A00000        MOV              r0, 0x0
-  200 000001C8 E3A01000        MOV              r1, 0x0
+  199 000001C4 E3A00000        MOV              r0, #0x0
+  200 000001C8 E3A01000        MOV              r1, #0x0
   201 000001CC         
   202 000001CC         TIMER0LOOP
   203 000001CC         

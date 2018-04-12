@@ -158,7 +158,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>.\lab7.s</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\lab7\lab7.s\37</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>

@@ -196,8 +196,8 @@ TIMER0
 	MOV r0, #0x30
 	BL output_character
 	
-	MOV r0, 0x0
-	MOV r1, 0x0
+	MOV r0, #0x0
+	MOV r1, #0x0
 	
 TIMER0LOOP
 	

@@ -126,6 +126,8 @@ int is_wall_horizontal(int x, int y) {
 
 unsigned char get_char_at(int x, int y) {
 	
+	printf("x %c, y %c", x, y);
+	
 	if(is_wall_horizontal(x, y)) return '-';
 	if(is_wall_vertical(x, y)) return '|';
 	
