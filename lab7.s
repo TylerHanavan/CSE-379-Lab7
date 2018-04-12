@@ -198,12 +198,39 @@ TIMER0
 	
 	MOV r0, 0x0
 	MOV r1, 0x0
+	
+TIMER0LOOP
+	
 	LDR r2, =get_char_at
 	MOV lr, pc
 	BX r2
 	
 	BL output_character
 	
+	ADD r0, #0x1
+	
+	CMP r0, #22
+	BEQ R0_RESET
+	
+	CMP r1, #16
+	BNE TIMER0LOOP
+	
+	BL new_line
+	BL new_line
+	BL new_line
+	BL new_line
+	BL new_line
+	
+	B FIQ_Exit
+	
+R0_RESET
+	STMFD SP!, {lr}
+	MOV r0, #0x0
+	ADD r1, #0x1
+	BL new_line
+	LDMFD SP!, {lr}
+	BX lr
+
 	B FIQ_Exit
 
 EINT1			; Check for EINT1 interrupt
