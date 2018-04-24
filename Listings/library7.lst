@@ -94,7 +94,7 @@ ARM Macro Assembler    Page 2
    51 00000098 E59F0344        LDR              r0, =0xE000C000 ;loads the memo
                                                             ry address 0xE000C0
                                                             00 into r0
-   52 0000009C E3A01078        MOV              r1, #120    ;copies decimal 120
+   52 0000009C E3A01021        MOV              r1, #33     ;copies decimal 120
                                                              into r1 / U0DLL
    53 000000A0 E5801000        STR              r1, [r0]    ;stores r1 into the
                                                              memory address at 
@@ -116,545 +116,546 @@ ARM Macro Assembler    Page 2
                                                              memory address at 
                                                             r0
    60 000000BC         ;uart0 baud rate = PCLK / 16 * (16 * UART0DLM + U0DLL)
-   61 000000BC E8BD4000        LDMFD            sp!, {lr}   ;pop link register 
+   61 000000BC         ;18.432
+   62 000000BC E8BD4000        LDMFD            sp!, {lr}   ;pop link register 
                                                             from stack
-   62 000000C0 E12FFF1E        BX               lr          ;move pc,lr
-   63 000000C4         
+   63 000000C0 E12FFF1E        BX               lr          ;move pc,lr
    64 000000C4         
-   65 000000C4         pin_connect_block_setup_for_uart0
-   66 000000C4 E92D4003        STMFD            sp!, {r0, r1, lr} ;Push stack
-   67 000000C8 E59F031C        LDR              r0, =0xE002C000 ; PINSEL0 load 
+   65 000000C4         
+   66 000000C4         pin_connect_block_setup_for_uart0
+   67 000000C4 E92D4003        STMFD            sp!, {r0, r1, lr} ;Push stack
+   68 000000C8 E59F031C        LDR              r0, =0xE002C000 ; PINSEL0 load 
                                                             pinsel0 r0
-   68 000000CC E5901000        LDR              r1, [r0]    ;Load pinsel0 conte
+   69 000000CC E5901000        LDR              r1, [r0]    ;Load pinsel0 conte
                                                             nts to r1
-   69 000000D0 E3811005        ORR              r1, r1, #5  ; Or with 5 dec.
 
 
 
 ARM Macro Assembler    Page 3 
 
 
-   70 000000D4 E3C1100A        BIC              r1, r1, #0xA 
+   70 000000D0 E3811005        ORR              r1, r1, #5  ; Or with 5 dec.
+   71 000000D4 E3C1100A        BIC              r1, r1, #0xA 
                                                             ; Clear against 0xA
                                                             
-   71 000000D8 E5801000        STR              r1, [r0]    ; Store results to 
+   72 000000D8 E5801000        STR              r1, [r0]    ; Store results to 
                                                             r0 in memory
-   72 000000DC E8BD4003        LDMFD            sp!, {r0, r1, lr} ;Pop stack
-   73 000000E0 E12FFF1E        BX               lr          ;Branch back
-   74 000000E4         
-   75 000000E4         setup_pins
-   76 000000E4 E92D400E        STMFD            SP!,{lr, r1, r2, r3}
-   77 000000E8         
-   78 000000E8 E59F1300        LDR              r1, =0xE0028008 ;IODIR for Seve
+   73 000000DC E8BD4003        LDMFD            sp!, {r0, r1, lr} ;Pop stack
+   74 000000E0 E12FFF1E        BX               lr          ;Branch back
+   75 000000E4         
+   76 000000E4         setup_pins
+   77 000000E4 E92D400E        STMFD            SP!,{lr, r1, r2, r3}
+   78 000000E8         
+   79 000000E8 E59F1300        LDR              r1, =0xE0028008 ;IODIR for Seve
                                                             n-Seg
-   79 000000EC E59F3300        LDR              r3, =0xB784 ;Load 0xB784 (for b
+   80 000000EC E59F3300        LDR              r3, =0xB784 ;Load 0xB784 (for b
                                                             it manipulation) to
                                                              r3
-   80 000000F0 E5813000        STR              r3, [r1]    ;store results to r
+   81 000000F0 E5813000        STR              r3, [r1]    ;store results to r
                                                             1
-   81 000000F4         
-   82 000000F4 E8BD400E        LDMFD            sp!, {lr, r1, r2, r3}
-   83 000000F8 E12FFF1E        BX               lr
-   84 000000FC         
-   85 000000FC         validate_input                       ;checks that the in
+   82 000000F4         
+   83 000000F4 E8BD400E        LDMFD            sp!, {lr, r1, r2, r3}
+   84 000000F8 E12FFF1E        BX               lr
+   85 000000FC         
+   86 000000FC         validate_input                       ;checks that the in
                                                             putted value (r0) i
                                                             s either hexadecima
                                                             l or 'q'
-   86 000000FC E92D400E        STMFD            SP!, {lr, r1, r2, r3} ;returns 
+   87 000000FC E92D400E        STMFD            SP!, {lr, r1, r2, r3} ;returns 
                                                             output as boolean i
                                                             n (r4)
-   87 00000100         
-   88 00000100 E3500071        CMP              r0, #0x71   ;'q'
-   89 00000104 0A0000B4        BEQ              quit
-   90 00000108         
-   91 00000108 E350000D        CMP              r0, #0xD
-   92 0000010C 0A000007        BEQ              vi_valid_number
-   93 00000110         
-   94 00000110         ; CMP r9, #0    ;not accepting input (bar 'q') when disp
+   88 00000100         
+   89 00000100 E3500071        CMP              r0, #0x71   ;'q'
+   90 00000104 0A0000B4        BEQ              quit
+   91 00000108         
+   92 00000108 E350000D        CMP              r0, #0xD
+   93 0000010C 0A000007        BEQ              vi_valid_number
+   94 00000110         
+   95 00000110         ; CMP r9, #0    ;not accepting input (bar 'q') when disp
                        lay is off
-   95 00000110         ; BEQ vi_invalid  
-   96 00000110         
-   97 00000110 E3500030        CMP              r0, #0x30   ;<0x30 invalid
-   98 00000114 BA000009        BLT              vi_invalid
-   99 00000118         
-  100 00000118 E3500046        CMP              r0, #0x46   ;>0x66 invalid
-  101 0000011C CA000007        BGT              vi_invalid
-  102 00000120         
-  103 00000120 E3500039        CMP              r0, #0x39   ;<=0x39 valid numbe
+   96 00000110         ; BEQ vi_invalid  
+   97 00000110         
+   98 00000110 E3500030        CMP              r0, #0x30   ;<0x30 invalid
+   99 00000114 BA000009        BLT              vi_invalid
+  100 00000118         
+  101 00000118 E3500046        CMP              r0, #0x46   ;>0x66 invalid
+  102 0000011C CA000007        BGT              vi_invalid
+  103 00000120         
+  104 00000120 E3500039        CMP              r0, #0x39   ;<=0x39 valid numbe
                                                             r
-  104 00000124 DA000001        BLE              vi_valid_number
-  105 00000128         
-  106 00000128 E3500041        CMP              r0, #0x41   ;>=0x41 valid upper
+  105 00000124 DA000001        BLE              vi_valid_number
+  106 00000128         
+  107 00000128 E3500041        CMP              r0, #0x41   ;>=0x41 valid upper
                                                             case letter
-  107 0000012C AA000001        BGE              vi_valid_letter_upper
-  108 00000130         
-  109 00000130         vi_valid_number
-  110 00000130         
-  111 00000130 E3A04001        MOV              r4, #1      ;return 1 for r4
-  112 00000134         
-  113 00000134 EA000002        B                vi_exit
+  108 0000012C AA000001        BGE              vi_valid_letter_upper
+  109 00000130         
+  110 00000130         vi_valid_number
+  111 00000130         
+  112 00000130 E3A04001        MOV              r4, #1      ;return 1 for r4
+  113 00000134         
 
 
 
 ARM Macro Assembler    Page 4 
 
 
-  114 00000138         
-  115 00000138         vi_valid_letter_upper
-  116 00000138         
-  117 00000138 E3A04001        MOV              r4, #1      ;return 1 for r4
-  118 0000013C         
-  119 0000013C EA000000        B                vi_exit
-  120 00000140         
-  121 00000140         vi_invalid
-  122 00000140         
-  123 00000140 E3A04000        MOV              r4, #0      ;return 0 for r4
-  124 00000144         
-  125 00000144         vi_exit
-  126 00000144         
-  127 00000144 E8BD400E        LDMFD            SP!, {lr, r1, r2, r3}
-  128 00000148 E12FFF1E        BX               lr
-  129 0000014C         
-  130 0000014C         from_ascii                           ; converts (singe-d
+  114 00000134 EA000002        B                vi_exit
+  115 00000138         
+  116 00000138         vi_valid_letter_upper
+  117 00000138         
+  118 00000138 E3A04001        MOV              r4, #1      ;return 1 for r4
+  119 0000013C         
+  120 0000013C EA000000        B                vi_exit
+  121 00000140         
+  122 00000140         vi_invalid
+  123 00000140         
+  124 00000140 E3A04000        MOV              r4, #0      ;return 0 for r4
+  125 00000144         
+  126 00000144         vi_exit
+  127 00000144         
+  128 00000144 E8BD400E        LDMFD            SP!, {lr, r1, r2, r3}
+  129 00000148 E12FFF1E        BX               lr
+  130 0000014C         
+  131 0000014C         from_ascii                           ; converts (singe-d
                                                             igit) number at r0 
                                                             from ascii number t
                                                             o normal number, re
                                                             turning at r4
-  131 0000014C E92D400E        STMFD            SP!, {lr, r1, r2, r3}
-  132 00000150         
-  133 00000150 E3500039        CMP              r0, #0x39
-  134 00000154 DA000000        BLE              fa_number
-  135 00000158         
-  136 00000158 EA000001        B                fa_upper
-  137 0000015C         
-  138 0000015C         fa_number
-  139 0000015C         
-  140 0000015C E2404030        SUB              r4, r0, #0x30
-  141 00000160         
-  142 00000160 EA000001        B                fa_exit
-  143 00000164         
-  144 00000164         fa_upper
-  145 00000164         
-  146 00000164 E2404041        SUB              r4, r0, #0x41
-  147 00000168 E284400A        ADD              r4, r4, #10
-  148 0000016C         
-  149 0000016C         fa_exit
-  150 0000016C         
-  151 0000016C E8BD400E        LDMFD            SP!, {lr, r1, r2, r3}
-  152 00000170 E12FFF1E        BX               lr
-  153 00000174         
-  154 00000174         toggle_seven_seg
-  155 00000174 E92D4001        STMFD            SP!, {lr, r0}
-  156 00000178         
-  157 00000178 E3590000        CMP              r9, #0      ;check if seven seg
+  132 0000014C E92D400E        STMFD            SP!, {lr, r1, r2, r3}
+  133 00000150         
+  134 00000150 E3500039        CMP              r0, #0x39
+  135 00000154 DA000000        BLE              fa_number
+  136 00000158         
+  137 00000158 EA000001        B                fa_upper
+  138 0000015C         
+  139 0000015C         fa_number
+  140 0000015C         
+  141 0000015C E2404030        SUB              r4, r0, #0x30
+  142 00000160         
+  143 00000160 EA000001        B                fa_exit
+  144 00000164         
+  145 00000164         fa_upper
+  146 00000164         
+  147 00000164 E2404041        SUB              r4, r0, #0x41
+  148 00000168 E284400A        ADD              r4, r4, #10
+  149 0000016C         
+  150 0000016C         fa_exit
+  151 0000016C         
+  152 0000016C E8BD400E        LDMFD            SP!, {lr, r1, r2, r3}
+  153 00000170 E12FFF1E        BX               lr
+  154 00000174         
+  155 00000174         toggle_seven_seg
+  156 00000174 E92D4001        STMFD            SP!, {lr, r0}
+  157 00000178         
+  158 00000178 E3590000        CMP              r9, #0      ;check if seven seg
                                                              is off
-  158 0000017C 1A000004        BNE              tss_off
-  159 00000180         
-  160 00000180         tss_on
-  161 00000180         
-  162 00000180 E3A09001        MOV              r9, #1      ;set the flag to #1
+  159 0000017C 1A000004        BNE              tss_off
+  160 00000180         
+  161 00000180         tss_on
+  162 00000180         
+  163 00000180 E3A09001        MOV              r9, #1      ;set the flag to #1
                                                              (r9) to say seven 
                                                             seg is on
-  163 00000184         
-  164 00000184 E1A00006        MOV              r0, r6
-  165 00000188         
+  164 00000184         
+  165 00000184 E1A00006        MOV              r0, r6
 
 
 
 ARM Macro Assembler    Page 5 
 
 
-  166 00000188         ; BL change_display   ;change display
-  167 00000188         
-  168 00000188 E59F0268        LDR              r0, =seg_on
-  169 0000018C EBFFFFFE        BL               output_string
-  170 00000190         
-  171 00000190 EA000003        B                tss_exit
-  172 00000194         
-  173 00000194         tss_off
-  174 00000194         
-  175 00000194 E3A09000        MOV              r9, #0      ;set the flag to #0
+  166 00000188         
+  167 00000188         ; BL change_display   ;change display
+  168 00000188         
+  169 00000188 E59F0268        LDR              r0, =seg_on
+  170 0000018C EBFFFFFE        BL               output_string
+  171 00000190         
+  172 00000190 EA000003        B                tss_exit
+  173 00000194         
+  174 00000194         tss_off
+  175 00000194         
+  176 00000194 E3A09000        MOV              r9, #0      ;set the flag to #0
                                                              (r9) to say seven 
                                                             seg is off
-  176 00000198 EBFFFFFE        BL               clear_display ;clear (turn off)
+  177 00000198 EBFFFFFE        BL               clear_display ;clear (turn off)
                                                              display
-  177 0000019C         
-  178 0000019C E59F0258        LDR              r0, =seg_off
-  179 000001A0 EBFFFFFE        BL               output_string
-  180 000001A4         
-  181 000001A4         tss_exit
-  182 000001A4         
-  183 000001A4 E8BD4001        LDMFD            SP!, {lr, r0}
-  184 000001A8 E12FFF1E        BX               lr
-  185 000001AC         
-  186 000001AC         change_display                       ;Displays hex value
+  178 0000019C         
+  179 0000019C E59F0258        LDR              r0, =seg_off
+  180 000001A0 EBFFFFFE        BL               output_string
+  181 000001A4         
+  182 000001A4         tss_exit
+  183 000001A4         
+  184 000001A4 E8BD4001        LDMFD            SP!, {lr, r0}
+  185 000001A8 E12FFF1E        BX               lr
+  186 000001AC         
+  187 000001AC         change_display                       ;Displays hex value
                                                              passed in r0
-  187 000001AC E92D400E        STMFD            SP!,{lr, r1, r2, r3}
-  188 000001B0         
-  189 000001B0 E3A09001        MOV              r9, #1
-  190 000001B4 E1A06000        MOV              r6, r0
-  191 000001B8         
-  192 000001B8 E59F1240        LDR              r1, =0xE0028000 ; Base address 
+  188 000001AC E92D400E        STMFD            SP!,{lr, r1, r2, r3}
+  189 000001B0         
+  190 000001B0 E3A09001        MOV              r9, #1
+  191 000001B4 E1A06000        MOV              r6, r0
+  192 000001B8         
+  193 000001B8 E59F1240        LDR              r1, =0xE0028000 ; Base address 
                                                             
-  193 000001BC E59F3240        LDR              r3, =digits_SET
-  194 000001C0 E1A00100        MOV              r0, r0, LSL #2 ; Each stored va
+  194 000001BC E59F3240        LDR              r3, =digits_SET
+  195 000001C0 E1A00100        MOV              r0, r0, LSL #2 ; Each stored va
                                                             lue is 32 bits 
-  195 000001C4 E7932000        LDR              r2, [r3, r0] ; Load IOSET patte
+  196 000001C4 E7932000        LDR              r2, [r3, r0] ; Load IOSET patte
                                                             rn for digit in r0 
                                                             
-  196 000001C8 E5812004        STR              r2, [r1, #4] ; Display (0x4 = o
+  197 000001C8 E5812004        STR              r2, [r1, #4] ; Display (0x4 = o
                                                             ffset to IOSET) 
-  197 000001CC         
-  198 000001CC E8BD400E        LDMFD            sp!, {lr, r1, r2, r3}
-  199 000001D0 E12FFF1E        BX               lr
-  200 000001D4         
-  201 000001D4         change_display_digit                 ;Displays hex value
+  198 000001CC         
+  199 000001CC E8BD400E        LDMFD            sp!, {lr, r1, r2, r3}
+  200 000001D0 E12FFF1E        BX               lr
+  201 000001D4         
+  202 000001D4         change_display_digit                 ;Displays hex value
                                                              passed in r0 at di
                                                             git r4
-  202 000001D4 E92D402E        STMFD            SP!,{lr, r1, r2, r3, r5}
-  203 000001D8         
-  204 000001D8 E3A0500F        MOV              r5, #0xF    ;mask
-  205 000001DC E1A05105        MOV              r5, r5, LSL #2
-  206 000001E0         
-  207 000001E0 E3540000        CMP              r4, #0
-  208 000001E4 0A000005        BEQ              mask_0
-  209 000001E8         
-  210 000001E8 E3540001        CMP              r4, #1
-  211 000001EC 0A000009        BEQ              mask_1
-  212 000001F0         
-  213 000001F0 E3540002        CMP              r4, #2
+  203 000001D4 E92D402E        STMFD            SP!,{lr, r1, r2, r3, r5}
+  204 000001D8         
+  205 000001D8 E3A0500F        MOV              r5, #0xF    ;mask
+  206 000001DC E1A05105        MOV              r5, r5, LSL #2
+  207 000001E0         
+  208 000001E0 E3540000        CMP              r4, #0
+  209 000001E4 0A000005        BEQ              mask_0
+  210 000001E8         
+  211 000001E8 E3540001        CMP              r4, #1
+  212 000001EC 0A000009        BEQ              mask_1
+  213 000001F0         
 
 
 
 ARM Macro Assembler    Page 6 
 
 
-  214 000001F4 0A00000D        BEQ              mask_2
-  215 000001F8         
-  216 000001F8 E3540003        CMP              r4, #3
-  217 000001FC 0A000011        BEQ              mask_3
-  218 00000200         
-  219 00000200         mask_0
-  220 00000200         
-  221 00000200 E3C55004        BIC              r5, r5, #4
-  222 00000204 E59F11E4        LDR              r1, =0xE0028008
-  223 00000208 E5912000        LDR              r2, [r1]
-  224 0000020C E1822005        ORR              r2, r2, r5
-  225 00000210 E5812000        STR              r2, [r1]
-  226 00000214         
-  227 00000214 EA000011        B                mask_done
-  228 00000218         
-  229 00000218         mask_1
-  230 00000218         
-  231 00000218 E3C55008        BIC              r5, r5, #8
-  232 0000021C E59F11CC        LDR              r1, =0xE0028008
-  233 00000220 E5912000        LDR              r2, [r1]
-  234 00000224 E1822005        ORR              r2, r2, r5
-  235 00000228 E5812000        STR              r2, [r1]
-  236 0000022C         
-  237 0000022C EA00000B        B                mask_done
-  238 00000230         
-  239 00000230         mask_2
-  240 00000230         
-  241 00000230 E3C55010        BIC              r5, r5, #0x10
-  242 00000234 E59F11B4        LDR              r1, =0xE0028008
-  243 00000238 E5912000        LDR              r2, [r1]
-  244 0000023C E1822005        ORR              r2, r2, r5
-  245 00000240 E5812000        STR              r2, [r1]
-  246 00000244         
-  247 00000244 EA000005        B                mask_done
-  248 00000248         
-  249 00000248         mask_3
-  250 00000248         
-  251 00000248 E3C55020        BIC              r5, r5, #0x20
-  252 0000024C E59F119C        LDR              r1, =0xE0028008
-  253 00000250 E5912000        LDR              r2, [r1]
-  254 00000254 E1822005        ORR              r2, r2, r5
-  255 00000258 E5812000        STR              r2, [r1]
-  256 0000025C         
-  257 0000025C EAFFFFFF        B                mask_done
-  258 00000260         
-  259 00000260         mask_done
-  260 00000260         
-  261 00000260 E3A09001        MOV              r9, #1
-  262 00000264 E59F119C        LDR              r1, =0xE0028004 ; Base address 
+  214 000001F0 E3540002        CMP              r4, #2
+  215 000001F4 0A00000D        BEQ              mask_2
+  216 000001F8         
+  217 000001F8 E3540003        CMP              r4, #3
+  218 000001FC 0A000011        BEQ              mask_3
+  219 00000200         
+  220 00000200         mask_0
+  221 00000200         
+  222 00000200 E3C55004        BIC              r5, r5, #4
+  223 00000204 E59F11E4        LDR              r1, =0xE0028008
+  224 00000208 E5912000        LDR              r2, [r1]
+  225 0000020C E1822005        ORR              r2, r2, r5
+  226 00000210 E5812000        STR              r2, [r1]
+  227 00000214         
+  228 00000214 EA000011        B                mask_done
+  229 00000218         
+  230 00000218         mask_1
+  231 00000218         
+  232 00000218 E3C55008        BIC              r5, r5, #8
+  233 0000021C E59F11CC        LDR              r1, =0xE0028008
+  234 00000220 E5912000        LDR              r2, [r1]
+  235 00000224 E1822005        ORR              r2, r2, r5
+  236 00000228 E5812000        STR              r2, [r1]
+  237 0000022C         
+  238 0000022C EA00000B        B                mask_done
+  239 00000230         
+  240 00000230         mask_2
+  241 00000230         
+  242 00000230 E3C55010        BIC              r5, r5, #0x10
+  243 00000234 E59F11B4        LDR              r1, =0xE0028008
+  244 00000238 E5912000        LDR              r2, [r1]
+  245 0000023C E1822005        ORR              r2, r2, r5
+  246 00000240 E5812000        STR              r2, [r1]
+  247 00000244         
+  248 00000244 EA000005        B                mask_done
+  249 00000248         
+  250 00000248         mask_3
+  251 00000248         
+  252 00000248 E3C55020        BIC              r5, r5, #0x20
+  253 0000024C E59F119C        LDR              r1, =0xE0028008
+  254 00000250 E5912000        LDR              r2, [r1]
+  255 00000254 E1822005        ORR              r2, r2, r5
+  256 00000258 E5812000        STR              r2, [r1]
+  257 0000025C         
+  258 0000025C EAFFFFFF        B                mask_done
+  259 00000260         
+  260 00000260         mask_done
+  261 00000260         
+  262 00000260 E3A09001        MOV              r9, #1
+  263 00000264 E59F119C        LDR              r1, =0xE0028004 ; Base address 
                                                             
-  263 00000268 E59F3194        LDR              r3, =digits_SET
-  264 0000026C E1A00100        MOV              r0, r0, LSL #2 ; Each stored va
+  264 00000268 E59F3194        LDR              r3, =digits_SET
+  265 0000026C E1A00100        MOV              r0, r0, LSL #2 ; Each stored va
                                                             lue is 32 bits 
-  265 00000270 E7932000        LDR              r2, [r3, r0] ; Load IOSET patte
+  266 00000270 E7932000        LDR              r2, [r3, r0] ; Load IOSET patte
                                                             rn for digit in r0 
                                                             
-  266 00000274         ;MOV r5, r5, LSL #2
-  267 00000274 E1822005        ORR              r2, r2, r5
-  268 00000278 E5812000        STR              r2, [r1]    ; Display (0x4 = of
+  267 00000274         ;MOV r5, r5, LSL #2
+  268 00000274 E1822005        ORR              r2, r2, r5
 
 
 
 ARM Macro Assembler    Page 7 
 
 
+  269 00000278 E5812000        STR              r2, [r1]    ; Display (0x4 = of
                                                             fset to IOSET) 
-  269 0000027C         
-  270 0000027C E8BD402E        LDMFD            sp!, {lr, r1, r2, r3, r5}
-  271 00000280 E12FFF1E        BX               lr
-  272 00000284         
-  273 00000284         clear_display
-  274 00000284 E92D4006        STMFD            SP!,{lr, r1, r2}
-  275 00000288         
-  276 00000288 E59F117C        LDR              r1, =0xE002800C 
+  270 0000027C         
+  271 0000027C E8BD402E        LDMFD            sp!, {lr, r1, r2, r3, r5}
+  272 00000280 E12FFF1E        BX               lr
+  273 00000284         
+  274 00000284         clear_display
+  275 00000284 E92D4006        STMFD            SP!,{lr, r1, r2}
+  276 00000288         
+  277 00000288 E59F117C        LDR              r1, =0xE002800C 
                                                             ;Load P0xCLR to r1
-  277 0000028C E59F217C        LDR              r2, =0xB7BC ;Load number (to r2
+  278 0000028C E59F217C        LDR              r2, =0xB7BC ;Load number (to r2
                                                             ) for bits of seven
                                                             -segment display
-  278 00000290 E5812000        STR              r2, [r1]    ;Store number in P0
+  279 00000290 E5812000        STR              r2, [r1]    ;Store number in P0
                                                             xClr at r1
-  279 00000294         
-  280 00000294 E8BD4006        LDMFD            sp!, {lr, r1, r2}
-  281 00000298 E12FFF1E        BX               lr
-  282 0000029C         
-  283 0000029C         read_character                       ;Begin Receive Char
+  280 00000294         
+  281 00000294 E8BD4006        LDMFD            sp!, {lr, r1, r2}
+  282 00000298 E12FFF1E        BX               lr
+  283 0000029C         
+  284 0000029C         read_character                       ;Begin Receive Char
                                                             acter block
-  284 0000029C E92D4038        STMFD            SP!,{lr, r3, r4, r5}
-  285 000002A0         read_character_2
-  286 000002A0 E59F316C        LDR              r3, =0xE000C014 ;loads the addr
+  285 0000029C E92D4038        STMFD            SP!,{lr, r3, r4, r5}
+  286 000002A0         read_character_2
+  287 000002A0 E59F316C        LDR              r3, =0xE000C014 ;loads the addr
                                                             ess of uart0 into r
                                                             egister r3 
-  287 000002A4         
-  288 000002A4 E5D34000        LDRB             r4, [r3]    ;loads the bytes at
+  288 000002A4         
+  289 000002A4 E5D34000        LDRB             r4, [r3]    ;loads the bytes at
                                                              address r3 into r4
                                                              (RXFE - RDR)
-  289 000002A8         
-  290 000002A8 E3A05001        MOV              r5, #1      ;immediate value 1 
+  290 000002A8         
+  291 000002A8 E3A05001        MOV              r5, #1      ;immediate value 1 
                                                             is copied into r5
-  291 000002AC E0045005        AND              r5, r4, r5  ;logically AND r4 a
+  292 000002AC E0045005        AND              r5, r4, r5  ;logically AND r4 a
                                                             nd r5 to compare th
                                                             e LSB(RDR) of r4
-  292 000002B0         
-  293 000002B0         ;CMP r5, #1   ;if the value of r5 is one, we are ready t
+  293 000002B0         
+  294 000002B0         ;CMP r5, #1   ;if the value of r5 is one, we are ready t
                        o receive data
-  294 000002B0         ;BNE read_character_2  ;else redo the process
-  295 000002B0         
-  296 000002B0         ; Receiving
-  297 000002B0         
-  298 000002B0 E59F312C        LDR              r3, =0xE000C000 ;loads the addr
+  295 000002B0         ;BNE read_character_2  ;else redo the process
+  296 000002B0         
+  297 000002B0         ; Receiving
+  298 000002B0         
+  299 000002B0 E59F312C        LDR              r3, =0xE000C000 ;loads the addr
                                                             ess of the receive 
                                                             buffer register int
                                                             o r5
-  299 000002B4 E5930000        LDR              r0, [r3]    ;hex value at r3 is
+  300 000002B4 E5930000        LDR              r0, [r3]    ;hex value at r3 is
                                                              loaded into r0
-  300 000002B8         read_character_break
-  301 000002B8 E8BD4038        LDMFD            sp!, {lr, r3, r4, r5}
-  302 000002BC E12FFF1E        BX               lr
-  303 000002C0         
-  304 000002C0         output_character                     ;Begin Transmit Cha
+  301 000002B8         read_character_break
+  302 000002B8 E8BD4038        LDMFD            sp!, {lr, r3, r4, r5}
+  303 000002BC E12FFF1E        BX               lr
+  304 000002C0         
+  305 000002C0         output_character                     ;Begin Transmit Cha
                                                             racter block
-  305 000002C0 E92D4068        STMFD            SP!,{lr, r3, r6, r5}
-  306 000002C4         output_character_2
-  307 000002C4 E59F3148        LDR              r3, =0xE000C014 ;loads address 
-                                                            of uart0 into regis
+  306 000002C0 E92D4068        STMFD            SP!,{lr, r3, r6, r5}
+  307 000002C4         output_character_2
+  308 000002C4 E59F3148        LDR              r3, =0xE000C014 ;loads address 
 
 
 
 ARM Macro Assembler    Page 8 
 
 
+                                                            of uart0 into regis
                                                             ter r3
-  308 000002C8         
-  309 000002C8 E5D36000        LDRB             r6, [r3]    ;loads bytes at add
+  309 000002C8         
+  310 000002C8 E5D36000        LDRB             r6, [r3]    ;loads bytes at add
                                                             ress r3 into r6 (RX
                                                             FE - RDR)
-  310 000002CC         
-  311 000002CC E3A05020        MOV              r5, #32     ;immediate value 32
+  311 000002CC         
+  312 000002CC E3A05020        MOV              r5, #32     ;immediate value 32
                                                              (00010000) copied 
                                                             into r5  
-  312 000002D0 E0065005        AND              r5, r6, r5  ;logically AND r6 a
+  313 000002D0 E0065005        AND              r5, r6, r5  ;logically AND r6 a
                                                             nd r5 to compare th
                                                             e 5th bit(THRE) of 
                                                             r6
-  313 000002D4         
-  314 000002D4 E3550020        CMP              r5, #32     ;if the fifth bit i
+  314 000002D4         
+  315 000002D4 E3550020        CMP              r5, #32     ;if the fifth bit i
                                                             s 1, then we are re
                                                             ady to transmit
-  315 000002D8 1AFFFFF9        BNE              output_character_2 ;else we red
+  316 000002D8 1AFFFFF9        BNE              output_character_2 ;else we red
                                                             o the process
-  316 000002DC         
-  317 000002DC         ; Transmitting
-  318 000002DC         
-  319 000002DC E59F5100        LDR              r5, =0xE000C000 ;loads the addr
+  317 000002DC         
+  318 000002DC         ; Transmitting
+  319 000002DC         
+  320 000002DC E59F5100        LDR              r5, =0xE000C000 ;loads the addr
                                                             ess of the transmit
                                                              holding register (
                                                             same as receive buf
                                                             fer)
-  320 000002E0         
-  321 000002E0 E5850000        STR              r0, [r5]    ;stores the value o
+  321 000002E0         
+  322 000002E0 E5850000        STR              r0, [r5]    ;stores the value o
                                                             f r0 into the addre
                                                             ss at r5
-  322 000002E4 E8BD4068        LDMFD            sp!, {lr, r3, r6, r5}
-  323 000002E8 E12FFF1E        BX               lr
-  324 000002EC         
-  325 000002EC         output_string
-  326 000002EC E92D4003        STMFD            SP!,{lr, r0, r1}
-  327 000002F0         
-  328 000002F0         output_string_2
-  329 000002F0 E4D40001        LDRB             r0, [r4], #1 ;Load =prompt cont
+  323 000002E4 E8BD4068        LDMFD            sp!, {lr, r3, r6, r5}
+  324 000002E8 E12FFF1E        BX               lr
+  325 000002EC         
+  326 000002EC         output_string
+  327 000002EC E92D4003        STMFD            SP!,{lr, r0, r1}
+  328 000002F0         
+  329 000002F0         output_string_2
+  330 000002F0 E4D40001        LDRB             r0, [r4], #1 ;Load =prompt cont
                                                             ents from memory (r
                                                             4) to r0, one byte 
                                                             at a time. Then inc
                                                             rements memory addr
                                                             ess, r4, by 1.
-  330 000002F4 EBFFFFFE        BL               output_character ;Branch and li
+  331 000002F4 EBFFFFFE        BL               output_character ;Branch and li
                                                             nk to output_charac
                                                             ter
-  331 000002F8         
-  332 000002F8 E3500000        CMP              r0,#0       ;compares r0 to nul
+  332 000002F8         
+  333 000002F8 E3500000        CMP              r0,#0       ;compares r0 to nul
                                                             l terminator
-  333 000002FC 1AFFFFFB        BNE              output_string_2 ;if equal we co
+  334 000002FC 1AFFFFFB        BNE              output_string_2 ;if equal we co
                                                             ntinue on with prog
                                                             ram
-  334 00000300         
-  335 00000300 EBFFFFFE        BL               new_line
-  336 00000304         
-  337 00000304 E8BD4003        LDMFD            sp!, {lr, r0, r1}
-  338 00000308 E12FFF1E        BX               lr
-  339 0000030C         
+  335 00000300         
+  336 00000300 EBFFFFFE        BL               new_line
+  337 00000304         
+  338 00000304 E8BD4003        LDMFD            sp!, {lr, r0, r1}
+  339 00000308 E12FFF1E        BX               lr
 
 
 
 ARM Macro Assembler    Page 9 
 
 
-  340 0000030C         new_line
-  341 0000030C E92D4401        STMFD            SP!,{lr, r0, r10}
-  342 00000310         ;MOV r10, r0     ;saves contents of r0 into r10 before u
+  340 0000030C         
+  341 0000030C         new_line
+  342 0000030C E92D4401        STMFD            SP!,{lr, r0, r10}
+  343 00000310         ;MOV r10, r0     ;saves contents of r0 into r10 before u
                        sing it
-  343 00000310 E3A0000A        MOV              r0, #0xA    ;new line character
+  344 00000310 E3A0000A        MOV              r0, #0xA    ;new line character
                                                              copied into r0
-  344 00000314 EBFFFFFE        BL               output_character ;branch and li
+  345 00000314 EBFFFFFE        BL               output_character ;branch and li
                                                             nk to output charac
                                                             ter
-  345 00000318 E3A0000D        MOV              r0, #0xD    ;carriage return co
+  346 00000318 E3A0000D        MOV              r0, #0xD    ;carriage return co
                                                             pied into r0
-  346 0000031C EBFFFFFE        BL               output_character ;branch and li
+  347 0000031C EBFFFFFE        BL               output_character ;branch and li
                                                             nk to output charac
                                                             ter
-  347 00000320         ;MOV r0, r10     ;takes saved content from r10 and copie
+  348 00000320         ;MOV r0, r10     ;takes saved content from r10 and copie
                        s into r0
-  348 00000320 E8BD4401        LDMFD            sp!, {lr, r0, r10}
-  349 00000324 E12FFF1E        BX               lr
-  350 00000328         
-  351 00000328         clear_input
-  352 00000328 E92D403E        STMFD            SP!, {lr, r1-r5}
-  353 0000032C         
-  354 0000032C E59F00E4        LDR              r0, =in_count ; Load in_count a
+  349 00000320 E8BD4401        LDMFD            sp!, {lr, r0, r10}
+  350 00000324 E12FFF1E        BX               lr
+  351 00000328         
+  352 00000328         clear_input
+  353 00000328 E92D403E        STMFD            SP!, {lr, r1-r5}
+  354 0000032C         
+  355 0000032C E59F00E4        LDR              r0, =in_count ; Load in_count a
                                                             ddress
-  355 00000330 E3A01030        MOV              r1, #0x30
-  356 00000334 EB000020        BL               to_mem
-  357 00000338         
-  358 00000338 E8BD403E        LDMFD            SP!, {lr, r1-r5}
-  359 0000033C E12FFF1E        BX               lr
-  360 00000340         
-  361 00000340         store_input
-  362 00000340 E92D403E        STMFD            SP!, {lr, r1-r5}
-  363 00000344         
-  364 00000344         ; IN r0 - contents of key pressed
-  365 00000344         
-  366 00000344 E1A03000        MOV              r3, r0
-  367 00000348         
-  368 00000348 E59F00C8        LDR              r0, =in_count ; Load in_count a
+  356 00000330 E3A01030        MOV              r1, #0x30
+  357 00000334 EB000020        BL               to_mem
+  358 00000338         
+  359 00000338 E8BD403E        LDMFD            SP!, {lr, r1-r5}
+  360 0000033C E12FFF1E        BX               lr
+  361 00000340         
+  362 00000340         store_input
+  363 00000340 E92D403E        STMFD            SP!, {lr, r1-r5}
+  364 00000344         
+  365 00000344         ; IN r0 - contents of key pressed
+  366 00000344         
+  367 00000344 E1A03000        MOV              r3, r0
+  368 00000348         
+  369 00000348 E59F00C8        LDR              r0, =in_count ; Load in_count a
                                                             ddress
-  369 0000034C EB00001E        BL               from_mem    ; Get value of in_c
+  370 0000034C EB00001E        BL               from_mem    ; Get value of in_c
                                                             ount
-  370 00000350         
-  371 00000350 E1A00001        MOV              r0, r1
-  372 00000354 EBFFFFFE        BL               from_ascii
-  373 00000358         
-  374 00000358 E1A01004        MOV              r1, r4
-  375 0000035C         
-  376 0000035C E59F00B8        LDR              r0, =input  ; Load input addres
+  371 00000350         
+  372 00000350 E1A00001        MOV              r0, r1
+  373 00000354 EBFFFFFE        BL               from_ascii
+  374 00000358         
+  375 00000358 E1A01004        MOV              r1, r4
+  376 0000035C         
+  377 0000035C E59F00B8        LDR              r0, =input  ; Load input addres
                                                             s
-  377 00000360 E0800001        ADD              r0, r0, r1  ; Pre-increment r0 
+  378 00000360 E0800001        ADD              r0, r0, r1  ; Pre-increment r0 
                                                             (address) by r1 (# 
                                                             of elements). 
-  378 00000364         
-  379 00000364 E1A04001        MOV              r4, r1
-  380 00000368         
-  381 00000368 E1A01003        MOV              r1, r3
-  382 0000036C         
-  383 0000036C EB000012        BL               to_mem
-  384 00000370         
+  379 00000364         
+  380 00000364 E1A04001        MOV              r4, r1
+  381 00000368         
+  382 00000368 E1A01003        MOV              r1, r3
+  383 0000036C         
+  384 0000036C EB000012        BL               to_mem
 
 
 
 ARM Macro Assembler    Page 10 
 
 
-  385 00000370 E59F00A0        LDR              r0, =in_count
-  386 00000374 E1A01004        MOV              r1, r4
-  387 00000378 E2811030        ADD              r1, r1, #0x30
-  388 0000037C E2811001        ADD              r1, r1, #1
-  389 00000380         
-  390 00000380 EB00000D        BL               to_mem
-  391 00000384         
-  392 00000384 E8BD403E        LDMFD            SP!, {lr, r1-r5}
-  393 00000388 E12FFF1E        BX               lr
-  394 0000038C         
-  395 0000038C         get_input                            ;Return char in mem
+  385 00000370         
+  386 00000370 E59F00A0        LDR              r0, =in_count
+  387 00000374 E1A01004        MOV              r1, r4
+  388 00000378 E2811030        ADD              r1, r1, #0x30
+  389 0000037C E2811001        ADD              r1, r1, #1
+  390 00000380         
+  391 00000380 EB00000D        BL               to_mem
+  392 00000384         
+  393 00000384 E8BD403E        LDMFD            SP!, {lr, r1-r5}
+  394 00000388 E12FFF1E        BX               lr
+  395 0000038C         
+  396 0000038C         get_input                            ;Return char in mem
                                                             ory at r0 (0 for 1s
                                                             t; 3 for 4th)
-  396 0000038C E92D403E        STMFD            SP!, {lr, r1-r5}
-  397 00000390         
-  398 00000390 E1A02000        MOV              r2, r0      ;Which char -> r2
-  399 00000394         
-  400 00000394 E59F0080        LDR              r0, =input
-  401 00000398 E0800002        ADD              r0, r0, r2  ;increment address 
+  397 0000038C E92D403E        STMFD            SP!, {lr, r1-r5}
+  398 00000390         
+  399 00000390 E1A02000        MOV              r2, r0      ;Which char -> r2
+  400 00000394         
+  401 00000394 E59F0080        LDR              r0, =input
+  402 00000398 E0800002        ADD              r0, r0, r2  ;increment address 
                                                             by r2
-  402 0000039C EB00000A        BL               from_mem
-  403 000003A0         
-  404 000003A0 E3510030        CMP              r1, #0x30
-  405 000003A4 BA000000        BLT              gi_fix
-  406 000003A8         
-  407 000003A8 EA000000        B                gi_end
-  408 000003AC         
-  409 000003AC         gi_fix
-  410 000003AC E3A01030        MOV              r1, #0x30
-  411 000003B0         
-  412 000003B0         gi_end
-  413 000003B0 E1A00001        MOV              r0, r1
-  414 000003B4         
-  415 000003B4 E8BD403E        LDMFD            SP!, {lr, r1-r5}
-  416 000003B8 E12FFF1E        BX               lr
-  417 000003BC         
-  418 000003BC         to_mem                               ;r0 - memory addres
+  403 0000039C EB00000A        BL               from_mem
+  404 000003A0         
+  405 000003A0 E3510030        CMP              r1, #0x30
+  406 000003A4 BA000000        BLT              gi_fix
+  407 000003A8         
+  408 000003A8 EA000000        B                gi_end
+  409 000003AC         
+  410 000003AC         gi_fix
+  411 000003AC E3A01030        MOV              r1, #0x30
+  412 000003B0         
+  413 000003B0         gi_end
+  414 000003B0 E1A00001        MOV              r0, r1
+  415 000003B4         
+  416 000003B4 E8BD403E        LDMFD            SP!, {lr, r1-r5}
+  417 000003B8 E12FFF1E        BX               lr
+  418 000003BC         
+  419 000003BC         to_mem                               ;r0 - memory addres
                                                             s, r1 - contents
-  419 000003BC E92D403C        STMFD            SP!, {lr, r2-r5}
-  420 000003C0         
-  421 000003C0 E5C01000        STRB             r1, [r0]
-  422 000003C4         
-  423 000003C4 E8BD403C        LDMFD            SP!, {lr, r2-r5}
-  424 000003C8 E12FFF1E        BX               lr
-  425 000003CC         
-  426 000003CC         from_mem                             ;r0 - memory addres
+  420 000003BC E92D403C        STMFD            SP!, {lr, r2-r5}
+  421 000003C0         
+  422 000003C0 E5C01000        STRB             r1, [r0]
+  423 000003C4         
+  424 000003C4 E8BD403C        LDMFD            SP!, {lr, r2-r5}
+  425 000003C8 E12FFF1E        BX               lr
+  426 000003CC         
+  427 000003CC         from_mem                             ;r0 - memory addres
                                                             s, return contents 
                                                             - r1
-  427 000003CC E92D403C        STMFD            SP!, {lr, r2-r5}
-  428 000003D0         
-  429 000003D0 E5D01000        LDRB             r1, [r0]
-  430 000003D4         
-  431 000003D4 E8BD403C        LDMFD            SP!, {lr, r2-r5}
-  432 000003D8 E12FFF1E        BX               lr
-  433 000003DC         
+  428 000003CC E92D403C        STMFD            SP!, {lr, r2-r5}
+  429 000003D0         
+  430 000003D0 E5D01000        LDRB             r1, [r0]
+  431 000003D4         
+  432 000003D4 E8BD403C        LDMFD            SP!, {lr, r2-r5}
+  433 000003D8 E12FFF1E        BX               lr
   434 000003DC         
   435 000003DC         
-  436 000003DC         quit
-  437 000003DC E3A07005        MOV              r7, #5
+  436 000003DC         
+  437 000003DC         quit
 
 
 
 ARM Macro Assembler    Page 11 
 
 
-  438 000003E0                 END
+  438 000003DC E3A07005        MOV              r7, #5
+  439 000003E0                 END
               E000C00C 
               E000C000 
               E000C004 
@@ -685,7 +686,7 @@ change_display 000001AC
 
 Symbol: change_display
    Definitions
-      At line 186 in file library7.s
+      At line 187 in file library7.s
    Uses
       At line 12 in file library7.s
 Comment: change_display used once
@@ -693,7 +694,7 @@ change_display_digit 000001D4
 
 Symbol: change_display_digit
    Definitions
-      At line 201 in file library7.s
+      At line 202 in file library7.s
    Uses
       At line 14 in file library7.s
 Comment: change_display_digit used once
@@ -701,16 +702,16 @@ clear_display 00000284
 
 Symbol: clear_display
    Definitions
-      At line 273 in file library7.s
+      At line 274 in file library7.s
    Uses
       At line 11 in file library7.s
-      At line 176 in file library7.s
+      At line 177 in file library7.s
 
 clear_input 00000328
 
 Symbol: clear_input
    Definitions
-      At line 351 in file library7.s
+      At line 352 in file library7.s
    Uses
       At line 20 in file library7.s
 Comment: clear_input used once
@@ -720,24 +721,24 @@ Symbol: digits_SET
    Definitions
       At line 27 in file library7.s
    Uses
-      At line 193 in file library7.s
-      At line 263 in file library7.s
+      At line 194 in file library7.s
+      At line 264 in file library7.s
 
 fa_exit 0000016C
 
 Symbol: fa_exit
    Definitions
-      At line 149 in file library7.s
+      At line 150 in file library7.s
    Uses
-      At line 142 in file library7.s
+      At line 143 in file library7.s
 Comment: fa_exit used once
 fa_number 0000015C
 
 Symbol: fa_number
    Definitions
-      At line 138 in file library7.s
+      At line 139 in file library7.s
    Uses
-      At line 134 in file library7.s
+      At line 135 in file library7.s
 Comment: fa_number used once
 fa_upper 00000164
 
@@ -749,33 +750,33 @@ Relocatable symbols
 
 Symbol: fa_upper
    Definitions
-      At line 144 in file library7.s
+      At line 145 in file library7.s
    Uses
-      At line 136 in file library7.s
+      At line 137 in file library7.s
 Comment: fa_upper used once
 from_ascii 0000014C
 
 Symbol: from_ascii
    Definitions
-      At line 130 in file library7.s
+      At line 131 in file library7.s
    Uses
       At line 16 in file library7.s
-      At line 372 in file library7.s
+      At line 373 in file library7.s
 
 from_mem 000003CC
 
 Symbol: from_mem
    Definitions
-      At line 426 in file library7.s
+      At line 427 in file library7.s
    Uses
-      At line 369 in file library7.s
-      At line 402 in file library7.s
+      At line 370 in file library7.s
+      At line 403 in file library7.s
 
 get_input 0000038C
 
 Symbol: get_input
    Definitions
-      At line 395 in file library7.s
+      At line 396 in file library7.s
    Uses
       At line 19 in file library7.s
 Comment: get_input used once
@@ -783,17 +784,17 @@ gi_end 000003B0
 
 Symbol: gi_end
    Definitions
-      At line 412 in file library7.s
+      At line 413 in file library7.s
    Uses
-      At line 407 in file library7.s
+      At line 408 in file library7.s
 Comment: gi_end used once
 gi_fix 000003AC
 
 Symbol: gi_fix
    Definitions
-      At line 409 in file library7.s
+      At line 410 in file library7.s
    Uses
-      At line 405 in file library7.s
+      At line 406 in file library7.s
 Comment: gi_fix used once
 in_count 00000005
 
@@ -801,9 +802,9 @@ Symbol: in_count
    Definitions
       At line 23 in file library7.s
    Uses
-      At line 354 in file library7.s
-      At line 368 in file library7.s
-      At line 385 in file library7.s
+      At line 355 in file library7.s
+      At line 369 in file library7.s
+      At line 386 in file library7.s
 
 
 
@@ -817,8 +818,8 @@ Symbol: input
    Definitions
       At line 22 in file library7.s
    Uses
-      At line 376 in file library7.s
-      At line 400 in file library7.s
+      At line 377 in file library7.s
+      At line 401 in file library7.s
 
 library7 00000000
 
@@ -832,44 +833,44 @@ mask_0 00000200
 
 Symbol: mask_0
    Definitions
-      At line 219 in file library7.s
+      At line 220 in file library7.s
    Uses
-      At line 208 in file library7.s
+      At line 209 in file library7.s
 Comment: mask_0 used once
 mask_1 00000218
 
 Symbol: mask_1
    Definitions
-      At line 229 in file library7.s
+      At line 230 in file library7.s
    Uses
-      At line 211 in file library7.s
+      At line 212 in file library7.s
 Comment: mask_1 used once
 mask_2 00000230
 
 Symbol: mask_2
    Definitions
-      At line 239 in file library7.s
+      At line 240 in file library7.s
    Uses
-      At line 214 in file library7.s
+      At line 215 in file library7.s
 Comment: mask_2 used once
 mask_3 00000248
 
 Symbol: mask_3
    Definitions
-      At line 249 in file library7.s
+      At line 250 in file library7.s
    Uses
-      At line 217 in file library7.s
+      At line 218 in file library7.s
 Comment: mask_3 used once
 mask_done 00000260
 
 Symbol: mask_done
    Definitions
-      At line 259 in file library7.s
+      At line 260 in file library7.s
    Uses
-      At line 227 in file library7.s
-      At line 237 in file library7.s
-      At line 247 in file library7.s
-      At line 257 in file library7.s
+      At line 228 in file library7.s
+      At line 238 in file library7.s
+      At line 248 in file library7.s
+      At line 258 in file library7.s
 
 
 
@@ -881,53 +882,53 @@ new_line 0000030C
 
 Symbol: new_line
    Definitions
-      At line 340 in file library7.s
+      At line 341 in file library7.s
    Uses
       At line 10 in file library7.s
-      At line 335 in file library7.s
+      At line 336 in file library7.s
 
 output_character 000002C0
 
 Symbol: output_character
    Definitions
-      At line 304 in file library7.s
+      At line 305 in file library7.s
    Uses
       At line 8 in file library7.s
-      At line 330 in file library7.s
-      At line 344 in file library7.s
-      At line 346 in file library7.s
+      At line 331 in file library7.s
+      At line 345 in file library7.s
+      At line 347 in file library7.s
 
 output_character_2 000002C4
 
 Symbol: output_character_2
    Definitions
-      At line 306 in file library7.s
+      At line 307 in file library7.s
    Uses
-      At line 315 in file library7.s
+      At line 316 in file library7.s
 Comment: output_character_2 used once
 output_string 000002EC
 
 Symbol: output_string
    Definitions
-      At line 325 in file library7.s
+      At line 326 in file library7.s
    Uses
       At line 9 in file library7.s
-      At line 169 in file library7.s
-      At line 179 in file library7.s
+      At line 170 in file library7.s
+      At line 180 in file library7.s
 
 output_string_2 000002F0
 
 Symbol: output_string_2
    Definitions
-      At line 328 in file library7.s
+      At line 329 in file library7.s
    Uses
-      At line 333 in file library7.s
+      At line 334 in file library7.s
 Comment: output_string_2 used once
 pin_connect_block_setup_for_uart0 000000C4
 
 Symbol: pin_connect_block_setup_for_uart0
    Definitions
-      At line 65 in file library7.s
+      At line 66 in file library7.s
    Uses
       At line 3 in file library7.s
 Comment: pin_connect_block_setup_for_uart0 used once
@@ -941,15 +942,15 @@ Symbol: quit
 ARM Macro Assembler    Page 5 Alphabetic symbol ordering
 Relocatable symbols
 
-      At line 436 in file library7.s
+      At line 437 in file library7.s
    Uses
-      At line 89 in file library7.s
+      At line 90 in file library7.s
 Comment: quit used once
 read_character 0000029C
 
 Symbol: read_character
    Definitions
-      At line 283 in file library7.s
+      At line 284 in file library7.s
    Uses
       At line 7 in file library7.s
 Comment: read_character used once
@@ -957,7 +958,7 @@ read_character_2 000002A0
 
 Symbol: read_character_2
    Definitions
-      At line 285 in file library7.s
+      At line 286 in file library7.s
    Uses
       None
 Comment: read_character_2 unused
@@ -965,7 +966,7 @@ read_character_break 000002B8
 
 Symbol: read_character_break
    Definitions
-      At line 300 in file library7.s
+      At line 301 in file library7.s
    Uses
       None
 Comment: read_character_break unused
@@ -975,7 +976,7 @@ Symbol: seg_off
    Definitions
       At line 25 in file library7.s
    Uses
-      At line 178 in file library7.s
+      At line 179 in file library7.s
 Comment: seg_off used once
 seg_on 00000007
 
@@ -983,13 +984,13 @@ Symbol: seg_on
    Definitions
       At line 24 in file library7.s
    Uses
-      At line 168 in file library7.s
+      At line 169 in file library7.s
 Comment: seg_on used once
 setup_pins 000000E4
 
 Symbol: setup_pins
    Definitions
-      At line 75 in file library7.s
+      At line 76 in file library7.s
    Uses
       At line 4 in file library7.s
 Comment: setup_pins used once
@@ -997,7 +998,7 @@ store_input 00000340
 
 Symbol: store_input
    Definitions
-      At line 361 in file library7.s
+      At line 362 in file library7.s
    Uses
       At line 18 in file library7.s
 
@@ -1011,17 +1012,17 @@ to_mem 000003BC
 
 Symbol: to_mem
    Definitions
-      At line 418 in file library7.s
+      At line 419 in file library7.s
    Uses
-      At line 356 in file library7.s
-      At line 383 in file library7.s
-      At line 390 in file library7.s
+      At line 357 in file library7.s
+      At line 384 in file library7.s
+      At line 391 in file library7.s
 
 toggle_seven_seg 00000174
 
 Symbol: toggle_seven_seg
    Definitions
-      At line 154 in file library7.s
+      At line 155 in file library7.s
    Uses
       At line 6 in file library7.s
 Comment: toggle_seven_seg used once
@@ -1029,23 +1030,23 @@ tss_exit 000001A4
 
 Symbol: tss_exit
    Definitions
-      At line 181 in file library7.s
+      At line 182 in file library7.s
    Uses
-      At line 171 in file library7.s
+      At line 172 in file library7.s
 Comment: tss_exit used once
 tss_off 00000194
 
 Symbol: tss_off
    Definitions
-      At line 173 in file library7.s
+      At line 174 in file library7.s
    Uses
-      At line 158 in file library7.s
+      At line 159 in file library7.s
 Comment: tss_off used once
 tss_on 00000180
 
 Symbol: tss_on
    Definitions
-      At line 160 in file library7.s
+      At line 161 in file library7.s
    Uses
       None
 Comment: tss_on unused
@@ -1061,7 +1062,7 @@ validate_input 000000FC
 
 Symbol: validate_input
    Definitions
-      At line 85 in file library7.s
+      At line 86 in file library7.s
    Uses
       At line 5 in file library7.s
 Comment: validate_input used once
@@ -1075,36 +1076,36 @@ vi_exit 00000144
 
 Symbol: vi_exit
    Definitions
-      At line 125 in file library7.s
+      At line 126 in file library7.s
    Uses
-      At line 113 in file library7.s
-      At line 119 in file library7.s
+      At line 114 in file library7.s
+      At line 120 in file library7.s
 
 vi_invalid 00000140
 
 Symbol: vi_invalid
    Definitions
-      At line 121 in file library7.s
+      At line 122 in file library7.s
    Uses
-      At line 98 in file library7.s
-      At line 101 in file library7.s
+      At line 99 in file library7.s
+      At line 102 in file library7.s
 
 vi_valid_letter_upper 00000138
 
 Symbol: vi_valid_letter_upper
    Definitions
-      At line 115 in file library7.s
+      At line 116 in file library7.s
    Uses
-      At line 107 in file library7.s
+      At line 108 in file library7.s
 Comment: vi_valid_letter_upper used once
 vi_valid_number 00000130
 
 Symbol: vi_valid_number
    Definitions
-      At line 109 in file library7.s
+      At line 110 in file library7.s
    Uses
-      At line 92 in file library7.s
-      At line 104 in file library7.s
+      At line 93 in file library7.s
+      At line 105 in file library7.s
 
 46 symbols
 380 symbols in table

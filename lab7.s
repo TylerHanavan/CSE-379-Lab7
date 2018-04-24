@@ -44,19 +44,16 @@ lab7
 	BL interrupt_init
 	BL clear_display
 	
-	LDR r0, =enemies
-	MOV r1, #1
-	LDR r2, =is_enemy_alive
+	LDR r4, =enemies
+	BL output_string
+	
+	LDR r2, =draw_board
 	MOV lr, pc
 	BX r2
 	
 	MOV r9, #0
 	
 	MOV r8, #2
-
-	LDR r4, =prompt
-
-	BL output_string	
 
 lab7_loop
 
@@ -192,6 +189,18 @@ FIQ_Handler
 
 	STMFD SP!, {r0, r1, r2, r3, r4, lr}   ; Save registers
 		
+	; Disable Interrupts
+
+	LDR r0, =0xFFFFF000
+
+	LDR r1, [r0, #0x10]
+	
+	MOV r2, #0x10
+
+	BIC r1, r1, r2 ; External Interrupt 1
+
+	STR r1, [r0, #0x10]
+		
 	LDR r0, =0xE0004000
 	LDR r1, [r0]
 	CMP r1, #0
@@ -257,6 +266,21 @@ FIQ_Keys
 quit_skip
 
 FIQ_Exit
+
+	
+		; Enable Interrupts
+
+		LDR r0, =0xFFFFF000
+
+		LDR r1, [r0, #0x10]
+
+		LDR r2, =0x8050
+
+		ORR r1, r1, r2 ; External Interrupt 1
+
+		STR r1, [r0, #0x10]
+		
+		
 
 		LDR r0, =0xE0004000
 		LDR r1, [r0]

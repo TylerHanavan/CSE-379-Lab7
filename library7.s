@@ -49,7 +49,7 @@ uart_init
 	MOV r1, #131			;copies decimal 131 into r1
 	STR r1, [r0]			;stores r1 into the memory address at r0
 	LDR r0, =0xE000C000		;loads the memory address 0xE000C000 into r0
-	MOV r1, #120			;copies decimal 120 into r1 / U0DLL
+	MOV r1, #33			;copies decimal 120 into r1 / U0DLL
 	STR r1, [r0]			;stores r1 into the memory address at r0
 	LDR r0, =0xE000C004		;loads the memory address 0xE000C004 into r0
 	MOV r1, #0			;copies decimal 0 into r1 / U0DLM
@@ -58,6 +58,7 @@ uart_init
 	MOV r1, #3			;copies decimal 3 into r1
 	STR r1, [r0]			;stores r1 into the memory address at r0
 	;uart0 baud rate = PCLK / 16 * (16 * UART0DLM + U0DLL)
+	;18.432
 	LDMFD sp!, {lr}			;pop link register from stack
 	BX lr				;move pc,lr
 
@@ -431,7 +432,7 @@ from_mem								;r0 - memory address, return contents - r1
 	LDMFD SP!, {lr, r2-r5}
 	BX lr
 	
-	
+
 
 quit
 	MOV r7, #5

@@ -22,39 +22,19 @@ int pseudo_printf(char c[]) {
 }
 
 int is_enemy_alive(int *address, int enemy_loc) {
-	return (*address & (1 << enemy_loc)) == 1;
+	return *(address + enemy_loc) & 1;
 }
 
 // WALLS \\
-
-int is_wall_vertical(int x, int y) {
-	return x == 0 || x == 16;
-}
-
-int is_wall_horizontal(int x, int y) {
-	return !is_wall_vertical(x, y) && (y == 0 || y == 22);
-}
 
 // GAME BOARD \\
 
 char* get_char_at(int x, int y) {
 	
-	//pseudo_printf("test\n\0");
+	if(x == 0) return "|\0";
+	if(x == 20) return "|\n\r\0";
 	
-	if(is_wall_vertical(x, y)) return "|\0";
-	if(is_wall_horizontal(x, y)) return "-\0";
-	
-	//int e = get_enemy_at(x, y);
-	
-	//if(e != -1) {
-		
-		//if(get_enemy_type(e) == 0) return "W\0";
-		//if(get_enemy_type(e) == 1) return "M\0";
-		//if(get_enemy_type(e) == 2) return "O\0";
-		
-	//}
-	
-	if(player_x_ == x && player_y_ == y) return "A\0";
+	if(y == 0 || y == 14) return "-\0";
 	
 	return " \0";
 	
@@ -62,8 +42,8 @@ char* get_char_at(int x, int y) {
 
 void draw_board() {
 	
-	for(int i = 0; i < 21; i++) {
-		for(int j = 0; j < 16; j++) {
+	for(int j = 0; j < 15; j++) {
+		for(int i = 0; i < 21; i++) {
 			
 			pseudo_printf(get_char_at(i, j));
 			
