@@ -1,9 +1,9 @@
 --cpu ARM7TDMI
-".\objects\library.o"
-".\objects\library_1.o"
 ".\objects\lab7.o"
-".\objects\startup.o"
 ".\objects\lab7wrapper.o"
+".\objects\library.o"
+".\objects\library7.o"
+".\objects\startup.o"
 --strict --scatter ".\Objects\lab7.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

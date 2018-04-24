@@ -1,4 +1,4 @@
-	AREA library, CODE, READWRITE
+	AREA library7, CODE, READWRITE
 	EXPORT uart_init
 	EXPORT pin_connect_block_setup_for_uart0
 	EXPORT setup_pins

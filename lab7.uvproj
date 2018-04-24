@@ -420,29 +420,29 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>library.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\library.c</FilePath>
-            </File>
-            <File>
-              <FileName>library.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\library.s</FilePath>
-            </File>
-            <File>
               <FileName>lab7.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\lab7.s</FilePath>
             </File>
             <File>
-              <FileName>Startup.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\Startup.s</FilePath>
-            </File>
-            <File>
               <FileName>lab7wrapper.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\lab7wrapper.c</FilePath>
+            </File>
+            <File>
+              <FileName>library.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\library.c</FilePath>
+            </File>
+            <File>
+              <FileName>library7.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\library7.s</FilePath>
+            </File>
+            <File>
+              <FileName>Startup.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Startup.s</FilePath>
             </File>
           </Files>
         </Group>

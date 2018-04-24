@@ -28,9 +28,11 @@
 		
 	EXTERN get_char_at
 	EXTERN draw_board
+	EXTERN is_enemy_alive
 
 prompt = "Press momentary push button to toggle seven segment display on or off. Enter four hexadecimal numbers, followed by [Enter], to change the display (if it is on). Press 'q' to exit program.",0
-    ALIGN
+enemies = "/////",0    
+	ALIGN
 
 lab7 	
 
@@ -41,6 +43,12 @@ lab7
 	BL setup_pins					;setup pins required for momentary push button and seven segment display	
 	BL interrupt_init
 	BL clear_display
+	
+	LDR r0, =enemies
+	MOV r1, #1
+	LDR r2, =is_enemy_alive
+	MOV lr, pc
+	BX r2
 	
 	MOV r9, #0
 	
