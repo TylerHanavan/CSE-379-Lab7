@@ -25,6 +25,12 @@ int is_enemy_alive(int *address, int enemy_loc) {
 	return *(address + enemy_loc) & 1;
 }
 
+int is_shield_alive(int *address, int loc) {
+	
+	return *(address + loc * 2) & 1;
+	
+}
+
 // WALLS \\
 
 // GAME BOARD \\
