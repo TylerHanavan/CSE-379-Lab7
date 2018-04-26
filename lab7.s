@@ -29,6 +29,7 @@
 	EXTERN get_char_at
 	EXTERN draw_board
 	EXTERN is_enemy_alive
+	EXTERN tick
 
 enemies = "////",0
 shields_alive = "////",0    
@@ -215,7 +216,7 @@ TIMER0
 	
 TIMER0LOOP
 	
-	LDR r2, =draw_board
+	LDR r2, =tick
 	MOV lr, pc
 	BX r2
 	
