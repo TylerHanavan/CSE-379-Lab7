@@ -30,9 +30,9 @@
 	EXTERN draw_board
 	EXTERN is_enemy_alive
 
-prompt = "Press momentary push button to toggle seven segment display on or off. Enter four hexadecimal numbers, followed by [Enter], to change the display (if it is on). Press 'q' to exit program.",0
-enemies = "/////",0
-shields = "////",0    
+enemies = "////",0
+shields_alive = "////",0    
+shields_type = "////",0    
 	ALIGN
 
 lab7 	

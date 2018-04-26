@@ -3,35 +3,32 @@
 <title>Static Call Graph - [.\Objects\lab7.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\lab7.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Tue Apr 24 12:17:59 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Wed Apr 25 22:40:59 2018
 <BR><P>
-<H3>Maximum Stack Usage =         24 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =         36 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-draw_board &rArr; pseudo_printf
+draw_board &rArr; get_char_at &rArr; is_shield
 <P>
 <H3>
 Functions with no stack information
 </H3><UL>
  <LI><a href="#[3]">Reset_Handler</a>
  <LI><a href="#[1b]">__user_initial_stackheap</a>
- <LI><a href="#[20]">lab7</a>
+ <LI><a href="#[22]">lab7</a>
  <LI><a href="#[9]">FIQ_Handler</a>
- <LI><a href="#[22]">uart_init</a>
- <LI><a href="#[23]">pin_connect_block_setup_for_uart0</a>
- <LI><a href="#[24]">setup_pins</a>
+ <LI><a href="#[24]">uart_init</a>
+ <LI><a href="#[25]">pin_connect_block_setup_for_uart0</a>
+ <LI><a href="#[26]">setup_pins</a>
  <LI><a href="#[58]">validate_input</a>
- <LI><a href="#[2b]">from_ascii</a>
- <LI><a href="#[28]">toggle_seven_seg</a>
- <LI><a href="#[59]">change_display</a>
- <LI><a href="#[5a]">change_display_digit</a>
- <LI><a href="#[25]">clear_display</a>
- <LI><a href="#[29]">read_character</a>
- <LI><a href="#[21]">output_character</a>
- <LI><a href="#[26]">output_string</a>
- <LI><a href="#[27]">new_line</a>
- <LI><a href="#[5b]">clear_input</a>
- <LI><a href="#[2a]">store_input</a>
- <LI><a href="#[5c]">get_input</a>
+ <LI><a href="#[59]">from_ascii</a>
+ <LI><a href="#[2a]">toggle_seven_seg</a>
+ <LI><a href="#[5a]">change_display</a>
+ <LI><a href="#[5b]">change_display_digit</a>
+ <LI><a href="#[27]">clear_display</a>
+ <LI><a href="#[2b]">read_character</a>
+ <LI><a href="#[23]">output_character</a>
+ <LI><a href="#[28]">output_string</a>
+ <LI><a href="#[29]">new_line</a>
  <LI><a href="#[4]">Undef_Handler</a>
  <LI><a href="#[5]">SWI_Handler</a>
  <LI><a href="#[6]">PAbt_Handler</a>
@@ -247,118 +244,122 @@ Global Symbols
 <P><STRONG><a name="[57]"></a>__semihosting_library_function</STRONG> (ARM, 0 bytes, Stack size unknown bytes, indicate_semi.o(.text), UNUSED)
 
 <P><STRONG><a name="[2]"></a>draw_board</STRONG> (ARM, 72 bytes, Stack size 16 bytes, library.o(i.draw_board))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24 + Unknown Stack Size
-<LI>Call Chain = draw_board &rArr; pseudo_printf
+<BR><BR>[Stack]<UL><LI>Max Depth = 36 + Unknown Stack Size
+<LI>Call Chain = draw_board &rArr; get_char_at &rArr; is_shield
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pseudo_printf
 <LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_char_at
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> lab7.o(interrupts)
 </UL>
-<P><STRONG><a name="[1e]"></a>get_char_at</STRONG> (ARM, 68 bytes, Stack size 0 bytes, library.o(i.get_char_at))
-<BR><BR>[Called By]<UL><LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;draw_board
+<P><STRONG><a name="[1e]"></a>get_char_at</STRONG> (ARM, 108 bytes, Stack size 12 bytes, library.o(i.get_char_at))
+<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = get_char_at &rArr; is_shield
+</UL>
+<BR>[Calls]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_shield
+</UL>
+<BR>[Called By]<UL><LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;draw_board
+</UL>
+
+<P><STRONG><a name="[20]"></a>is_shield</STRONG> (ARM, 164 bytes, Stack size 8 bytes, library.o(i.is_shield))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = is_shield
+</UL>
+<BR>[Calls]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_shield_alive
+</UL>
+<BR>[Called By]<UL><LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_char_at
+</UL>
+
+<P><STRONG><a name="[21]"></a>is_shield_alive</STRONG> (ARM, 44 bytes, Stack size 0 bytes, library.o(i.is_shield_alive))
+<BR><BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_shield
 </UL>
 
 <P><STRONG><a name="[b]"></a>main</STRONG> (ARM, 20 bytes, Stack size 8 bytes, lab7wrapper.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8 + Unknown Stack Size
 <LI>Call Chain = main
 </UL>
-<BR>[Calls]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7 (via Veneer)
+<BR>[Calls]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7 (via Veneer)
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> __rtentry2.o(.ARM.Collect$$rtentry$$0000000D)
 </UL>
-<P><STRONG><a name="[1f]"></a>pseudo_printf</STRONG> (ARM, 48 bytes, Stack size 8 bytes, library.o(i.pseudo_printf))
+<P><STRONG><a name="[1f]"></a>pseudo_printf</STRONG> (ARM, 40 bytes, Stack size 8 bytes, library.o(i.pseudo_printf))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8 + Unknown Stack Size
 <LI>Call Chain = pseudo_printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_character (via Veneer)
+<BR>[Calls]<UL><LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_character (via Veneer)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;draw_board
 </UL>
 
-<P><STRONG><a name="[20]"></a>lab7</STRONG> (ARM, 0 bytes, Stack size unknown bytes, lab7.o(interrupts))
-<BR><BR>[Calls]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_init
-<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setup_pins
-<LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pin_connect_block_setup_for_uart0
-<LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_string
-<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_display
+<P><STRONG><a name="[22]"></a>lab7</STRONG> (ARM, 0 bytes, Stack size unknown bytes, lab7.o(interrupts))
+<BR><BR>[Calls]<UL><LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_init
+<LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setup_pins
+<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pin_connect_block_setup_for_uart0
+<LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_string
+<LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_display
 </UL>
 <BR>[Called By]<UL><LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main (via Veneer)
 </UL>
 
 <P><STRONG><a name="[9]"></a>FIQ_Handler</STRONG> (ARM, 0 bytes, Stack size unknown bytes, lab7.o(interrupts))
-<BR><BR>[Calls]<UL><LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggle_seven_seg
-<LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_character
-<LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;new_line
+<BR><BR>[Calls]<UL><LI><a href="#[2a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggle_seven_seg
+<LI><a href="#[2b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_character
+<LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;new_line
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup.o(RESET)
 </UL>
-<P><STRONG><a name="[22]"></a>uart_init</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
-<BR><BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
+<P><STRONG><a name="[24]"></a>uart_init</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
 </UL>
 
-<P><STRONG><a name="[23]"></a>pin_connect_block_setup_for_uart0</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
-<BR><BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
+<P><STRONG><a name="[25]"></a>pin_connect_block_setup_for_uart0</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
 </UL>
 
-<P><STRONG><a name="[24]"></a>setup_pins</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
-<BR><BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
+<P><STRONG><a name="[26]"></a>setup_pins</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
 </UL>
 
 <P><STRONG><a name="[58]"></a>validate_input</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
 
-<P><STRONG><a name="[2b]"></a>from_ascii</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
-<BR><BR>[Called By]<UL><LI><a href="#[2a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;store_input
-</UL>
+<P><STRONG><a name="[59]"></a>from_ascii</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
 
-<P><STRONG><a name="[28]"></a>toggle_seven_seg</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
-<BR><BR>[Calls]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_string
-<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_display
+<P><STRONG><a name="[2a]"></a>toggle_seven_seg</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
+<BR><BR>[Calls]<UL><LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_display
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIQ_Handler
 </UL>
 
-<P><STRONG><a name="[59]"></a>change_display</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
+<P><STRONG><a name="[5a]"></a>change_display</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
 
-<P><STRONG><a name="[5a]"></a>change_display_digit</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
+<P><STRONG><a name="[5b]"></a>change_display_digit</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
 
-<P><STRONG><a name="[25]"></a>clear_display</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
-<BR><BR>[Called By]<UL><LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggle_seven_seg
-<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
+<P><STRONG><a name="[27]"></a>clear_display</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
+<BR><BR>[Called By]<UL><LI><a href="#[2a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggle_seven_seg
+<LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
 </UL>
 
-<P><STRONG><a name="[29]"></a>read_character</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
+<P><STRONG><a name="[2b]"></a>read_character</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
 <BR><BR>[Called By]<UL><LI><a href="#[9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIQ_Handler
 </UL>
 
-<P><STRONG><a name="[21]"></a>output_character</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
+<P><STRONG><a name="[23]"></a>output_character</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
 <BR><BR>[Called By]<UL><LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pseudo_printf (via Veneer)
-<LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_string
-<LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;new_line
+<LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_string
+<LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;new_line
 </UL>
 
-<P><STRONG><a name="[26]"></a>output_string</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
-<BR><BR>[Calls]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_character
-<LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;new_line
+<P><STRONG><a name="[28]"></a>output_string</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
+<BR><BR>[Calls]<UL><LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_character
+<LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;new_line
 </UL>
-<BR>[Called By]<UL><LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggle_seven_seg
-<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
+<BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lab7
 </UL>
 
-<P><STRONG><a name="[27]"></a>new_line</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
-<BR><BR>[Calls]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_character
+<P><STRONG><a name="[29]"></a>new_line</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7))
+<BR><BR>[Calls]<UL><LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_character
 </UL>
-<BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_string
+<BR>[Called By]<UL><LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;output_string
 <LI><a href="#[9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIQ_Handler
 </UL>
-
-<P><STRONG><a name="[5b]"></a>clear_input</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
-
-<P><STRONG><a name="[2a]"></a>store_input</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[2b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;from_ascii
-</UL>
-
-<P><STRONG><a name="[5c]"></a>get_input</STRONG> (ARM, 0 bytes, Stack size unknown bytes, library7.o(library7), UNUSED)
 <P>
 <H3>
 Local Symbols

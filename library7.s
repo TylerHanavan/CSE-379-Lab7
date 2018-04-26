@@ -15,15 +15,6 @@
 
 	EXPORT from_ascii
 		
-	EXPORT store_input
-	EXPORT get_input
-	EXPORT clear_input
-
-input = "    ",0
-in_count = "0",0
-seg_on = "Seven segment display turned on",0
-seg_off = "Seven segment display turned off",0
-		
 digits_SET   
     DCD 0x00003780  ; 0 
     DCD 0x00003000  ; 1  
@@ -166,8 +157,6 @@ tss_on
 
 ;	BL change_display			;change display
 
-	LDR r0, =seg_on
-	BL output_string
 
 	B tss_exit 
 
@@ -176,8 +165,6 @@ tss_off
 	MOV r9, #0				;set the flag to #0 (r9) to say seven seg is off
 	BL clear_display			;clear (turn off) display
 
-	LDR r0, =seg_off
-	BL output_string
 
 tss_exit
 
@@ -347,65 +334,7 @@ new_line
 	BL output_character			;branch and link to output character
 	;MOV r0, r10					;takes saved content from r10 and copies into r0
 	LDMFD sp!, {lr, r0, r10}
-	BX lr	 
-	
-clear_input
-	STMFD SP!, {lr, r1-r5}
-	
-	LDR r0, =in_count			; Load in_count address
-	MOV r1, #0x30
-	BL to_mem
-	
-	LDMFD SP!, {lr, r1-r5}
 	BX lr
-	
-store_input
-	STMFD SP!, {lr, r1-r5}
-
-	; IN r0 - contents of key pressed
-
-	MOV r3, r0
-
-	LDR r0, =in_count			; Load in_count address
-	BL from_mem					; Get value of in_count
-	
-	MOV r0, r1
-	BL from_ascii
-	
-	MOV r1, r4
-
-	LDR r0, =input				; Load input address
-	ADD r0, r0, r1				; Pre-increment r0 (address) by r1 (# of elements). 
-	
-	MOV r4, r1
-	
-	MOV r1, r3
-	
-	BL to_mem
-	
-	LDR r0, =in_count
-	MOV r1, r4
-	ADD r1, r1, #0x30
-	ADD r1, r1, #1
-	
-	BL to_mem
-
-	LDMFD SP!, {lr, r1-r5}
-	BX lr
-	
-get_input						;Return char in memory at r0 (0 for 1st; 3 for 4th)
-	STMFD SP!, {lr, r1-r5}
-
-	MOV r2, r0					;Which char -> r2
-
-	LDR r0, =input
-	ADD r0, r0, r2				;increment address by r2
-	BL from_mem
-	
-	CMP r1, #0x30
-	BLT gi_fix
-	
-	B gi_end
 	
 gi_fix
 	MOV r1, #0x30
@@ -431,8 +360,6 @@ from_mem								;r0 - memory address, return contents - r1
 	
 	LDMFD SP!, {lr, r2-r5}
 	BX lr
-	
-
 
 quit
 	MOV r7, #5
