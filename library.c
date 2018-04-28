@@ -5,8 +5,19 @@ extern void output_character(char c);
 
 int level_;
 
-int player_x_;
-int player_y_;
+int player_x_ = 10;
+int player_y_ = 13;
+
+int next_x_ = 0;
+int q_shot = 0;
+
+int player_bullet_x = 0;
+int player_bullet_y = 0;
+
+int enemy_bullet_x = 0;
+int enemy_bullet_y = 0;
+
+int lives = 3;
 
 int score_total_;
 
@@ -20,6 +31,10 @@ int tick = 0;
 void pseudo_printf(char c[]) {
 	while (*c != '\0') 
 		output_character(*(c++));
+}
+
+int is_player(int x, int y) {
+	return player_x_ == x && player_y_ == y;
 }
 
 int is_shield_alive(int loc) {
@@ -69,6 +84,8 @@ char* get_char_at(int x, int y) {
 	
 	if(is_shield(x, y)) return get_shield_type(x, y);
 	
+	if(is_player(x, y)) return "A\0";
+	
 	return " \0";
 	
 }
@@ -85,11 +102,24 @@ void draw_board() {
 	
 }
 
-void tick() {
+void handle_input(char c) {
+	if(c == 0x61 || c == 0x41) next_x_ = -1;
+	if(c == 0x44 || c == 0x64) next_x_ = 1;
+}
+
+void do_tick() {
 	
 	++tick;
 	
-	if(tick % 8 == 0)
+	if(next_x_ > 0) player_x_++;
+	if(next_x_ < 0) player_x_--;
+	
+	next_x_ = 0;
+	
+	if(player_x_ < 1) player_x_ = 1;
+	if(player_x_ > 19) player_x_ = 19;
+	
+	if(tick % 10 == 0)
 		draw_board();
 	
 	if(tick > 100000)

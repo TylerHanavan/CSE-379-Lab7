@@ -26,10 +26,9 @@
 	EXTERN get_input
 	EXTERN clear_input
 		
-	EXTERN get_char_at
-	EXTERN draw_board
 	EXTERN is_enemy_alive
-	EXTERN tick
+	EXTERN do_tick
+	EXTERN handle_input
 
 enemies = "////",0
 shields_alive = "////",0    
@@ -48,10 +47,6 @@ lab7
 	
 	LDR r4, =enemies
 	BL output_string
-	
-	LDR r2, =draw_board
-	MOV lr, pc
-	BX r2
 	
 	MOV r9, #0
 	
@@ -216,7 +211,7 @@ TIMER0
 	
 TIMER0LOOP
 	
-	LDR r2, =tick
+	LDR r2, =do_tick
 	MOV lr, pc
 	BX r2
 	
@@ -264,6 +259,10 @@ FIQ_Keys
 	BNE FIQ_Exit
 
 	BL read_character
+	
+	LDR r2, =handle_input
+	MOV lr, pc
+	BX r2
 
 quit_skip
 
