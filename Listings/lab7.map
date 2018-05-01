@@ -617,14 +617,14 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       508         76          0          0          0        348   lab7.o
-        20          0          0          0          0       1867   lab7wrapper.o
-      1480        116          0         64          0       8072   library.o
-       820        112          0          0          0        384   library7.o
-       300         60          0          0       1160        500   startup.o
+       508         76          0          0          0        328   lab7.o
+        20          0          0          0          0       1843   lab7wrapper.o
+      1480        116          0         64          0       7676   library.o
+       820        112          0          0          0        364   library7.o
+       300         60          0          0       1160        452   startup.o
 
     ----------------------------------------------------------------------
-      3144        372         32         64       1160      11171   Object Totals
+      3144        372         32         64       1160      10663   Object Totals
         16          8         32          0          0          0   (incl. Generated)
          0          0          0          0          0          0   (incl. Padding)
 
@@ -674,8 +674,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      4008        392         32         64       1256      11095   Grand Totals
-      4008        392         32        868       1256      11095   ELF Image Totals (compressed)
+      4008        392         32         64       1256      10587   Grand Totals
+      4008        392         32        868       1256      10587   ELF Image Totals (compressed)
       4008        392         32        868          0          0   ROM Totals
 
 ==============================================================================

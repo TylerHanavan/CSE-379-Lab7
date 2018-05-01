@@ -111,7 +111,7 @@ char* get_char_at(int x, int y) {
 	
 	if(is_player(x, y)) return "A\0";
 	
-	if(is_player_bullet(x, y)) return "|\0";
+	if(is_player_bullet(x, y)) return "^\0";
 	
 	return " \0";
 	
