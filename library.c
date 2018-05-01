@@ -9,13 +9,13 @@ int player_x_ = 10;
 int player_y_ = 13;
 
 int next_x_ = 0;
-int q_shot = 0;
+int next_shoot = 0;
 
-int player_bullet_x = 0;
-int player_bullet_y = 0;
+int player_bullet_x = -1;
+int player_bullet_y = -1;
 
-int enemy_bullet_x = 0;
-int enemy_bullet_y = 0;
+int enemy_bullet_x = -1;
+int enemy_bullet_y = -1;
 
 int lives = 3;
 
@@ -71,7 +71,32 @@ void set_shield_type(int loc, int type) {
 	else shields_types = shields_types & ~(1 << loc);
 }
 
-// WALLS \\
+void set_shield_alive(int loc, int alive) {
+	if(alive != 0) shields = shields | (1 << loc);
+	else shields = shields & ~(1 << loc);
+}
+
+int collides() {
+	
+	if(is_shield(player_bullet_x, player_bullet_y) == 3000) {
+		set_shield_type(get_shield_from_coordinates(player_bullet_x, player_bullet_y), 0);
+		player_bullet_x = -1;
+		player_bullet_y = -1;
+		return 1;
+	}
+	
+	if(player_bullet_y < 1) {
+		player_bullet_x = -1;
+		player_bullet_y = -1;
+	}
+	
+	return 0;
+	
+}
+
+int is_player_bullet(int x, int y) {
+	return x == player_bullet_x && y == player_bullet_y;
+}
 
 // GAME BOARD \\
 
@@ -85,6 +110,8 @@ char* get_char_at(int x, int y) {
 	if(is_shield(x, y)) return get_shield_type(x, y);
 	
 	if(is_player(x, y)) return "A\0";
+	
+	if(is_player_bullet(x, y)) return "|\0";
 	
 	return " \0";
 	
@@ -102,25 +129,37 @@ void draw_board() {
 	
 }
 
+void shoot() {
+	if(player_bullet_x == -1) {
+		player_bullet_x = player_x_;
+		player_bullet_y = player_y_ -1;
+	}
+}
+
 void handle_input(char c) {
 	if(c == 0x61 || c == 0x41) next_x_ = -1;
 	if(c == 0x44 || c == 0x64) next_x_ = 1;
+	if(c == 0x20 || c == 0x57 || c == 0x77) shoot();
 }
 
 void do_tick() {
 	
 	++tick;
 	
-	if(next_x_ > 0) player_x_++;
-	if(next_x_ < 0) player_x_--;
+	player_x_ += next_x_;
 	
 	next_x_ = 0;
 	
 	if(player_x_ < 1) player_x_ = 1;
 	if(player_x_ > 19) player_x_ = 19;
 	
-	if(tick % 10 == 0)
+	if(tick % 10 == 0) {
+		if(player_bullet_x != -1) {
+			player_bullet_y--;
+		}
+		collides();
 		draw_board();
+	}
 	
 	if(tick > 100000)
 		tick = 0;
