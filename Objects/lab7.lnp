@@ -4,6 +4,7 @@
 ".\objects\library.o"
 ".\objects\library7.o"
 ".\objects\startup.o"
+".\objects\structs.o"
 --strict --scatter ".\Objects\lab7.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
