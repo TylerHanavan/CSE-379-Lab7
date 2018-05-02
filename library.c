@@ -19,6 +19,7 @@ int enemy_bullet_y = -1;
 
 int lives = 3;
 
+int score_level_ = 0;
 int score_total_;
 
 long enemies = 0xFFFFFFFF;
@@ -31,6 +32,14 @@ void pseudo_printf(char c[]) {
 	while (*c != '\0') 
 		output_character(*(c++));
 }
+
+void set_score_level(int type){
+	if(type == 0) score_level_ += 10;
+	else if(type == 1) score_level_ += 20;
+	else score_level_ += 40;
+}
+
+int get_score_level(){ return score_level_; }
 
 int is_player(int x, int y) {
 	return player_x_ == x && player_y_ == y;
@@ -136,6 +145,7 @@ int collides() {
 	int id = get_enemy_from_coordinates(player_bullet_x, player_bullet_y);
 	if(id != -1 && get_enemy_alive(id) == 1) {
 			set_enemy_alive(id, 0);
+		  set_score_level(get_enemy_type(id));
 			player_bullet_x = -1;
 			player_bullet_y = -1;
 		return 1;

@@ -29,10 +29,14 @@
 	EXTERN is_enemy_alive
 	EXTERN do_tick
 	EXTERN handle_input
+		
+	EXTERN get_score_level
+	EXTERN score_level_
 
 enemies = "////",0
 shields_alive = "////",0    
-shields_type = "////",0    
+shields_type = "////",0   
+instructions = "Welcome to Space Invaders! The purpose of the game is to rack up as many points as possble within 2 minutes. Each level will contain 35 enemies and 3 random motherships. The first two rows of enemies ('W') will count as 10 points. The next two rows of enemies ('M') will count as 20 points. The following row ('O') will count as 40 points. The last row will contain a mothership moving at a different speed in random directions unlike the space invaders. Each mothership will vary in points within the range 100 to 300. It only takes one shot to kill an enemy, but they can shoot back and kill you in one shot. Use your shields to protect you. Press 'a' to move your spaceship left and 'd' to move your spaceship right. Press 'w' or the space button to fire at your enemies. Be careful not to shoot at your shields or else they will deplete. Once all 35 space invaders are destroyed, the level progresses as well as the speed of the space invaders. You have 4 lives, every life you lose you will also lose 100 points. Once all 4 lives are used up, your total score will be shown. When you are ready to play hit the letter 'p'. Press 'm' to quit the game.",0
 	ALIGN
 
 lab7 	
@@ -42,11 +46,18 @@ lab7
 	BL uart_init					;setup the uart with its init subroutine
 	BL pin_connect_block_setup_for_uart0		;setup the pin connect block
 	BL setup_pins					;setup pins required for momentary push button and seven segment display	
+
+	LDR r4, =instructions
+	BL output_string
+	
+check_game_start
+	BL read_character
+	
+	CMP r0, #0x70     		;character 'p'
+	BNE check_game_start
+	
 	BL interrupt_init
 	BL clear_display
-	
-	LDR r4, =enemies
-	BL output_string
 	
 	MOV r9, #0
 	
@@ -54,14 +65,15 @@ lab7
 
 lab7_loop
 
-	;CMP r7, #5
-	;BGE lab7_end
-
 	B lab7_loop
 
 lab7_end
 
 	BL clear_display
+	
+	LDR r6, =score_level_
+	MOV lr, pc
+	BX r6
 	
 	LDMFD sp!,{lr}
 
@@ -260,15 +272,17 @@ FIQ_Keys
 
 	BL read_character
 	
+	CMP r0, #0x6D
+	BEQ lab7_end
+	
 	LDR r2, =handle_input
 	MOV lr, pc
 	BX r2
 
-quit_skip
+
 
 FIQ_Exit
-
-	
+		
 		; Enable Interrupts
 
 		LDR r0, =0xFFFFF000
@@ -281,8 +295,6 @@ FIQ_Exit
 
 		STR r1, [r0, #0x10]
 		
-		
-
 		LDR r0, =0xE0004000
 		LDR r1, [r0]
 
