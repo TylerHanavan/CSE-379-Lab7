@@ -51,7 +51,10 @@ lab7
 	BL uart_init					;setup the uart with its init subroutine
 	BL pin_connect_block_setup_for_uart0		;setup the pin connect block
 	BL setup_pins					;setup pins required for momentary push button and seven segment display	
-
+	BL interrupt_init
+	
+	B lab7_loop
+	
 	LDR r4, =instructions
 	BL output_string
 	
