@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\lab7.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\lab7.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Tue May 01 21:21:29 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Wed May 02 20:46:24 2018
 <BR><P>
 <H3>Maximum Stack Usage =         60 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -268,7 +268,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;do_tick
 </UL>
 
-<P><STRONG><a name="[3]"></a>do_tick</STRONG> (ARM, 340 bytes, Stack size 8 bytes, library.o(i.do_tick))
+<P><STRONG><a name="[3]"></a>do_tick</STRONG> (ARM, 384 bytes, Stack size 8 bytes, library.o(i.do_tick))
 <BR><BR>[Stack]<UL><LI>Max Depth = 60 + Unknown Stack Size
 <LI>Call Chain = do_tick &rArr; draw_board &rArr; get_char_at &rArr; is_shield
 </UL>
@@ -326,8 +326,10 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_char_at
 </UL>
 
-<P><STRONG><a name="[27]"></a>get_enemy_from_coordinates</STRONG> (ARM, 92 bytes, Stack size 0 bytes, library.o(i.get_enemy_from_coordinates))
-<BR><BR>[Called By]<UL><LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_char_at
+<P><STRONG><a name="[27]"></a>get_enemy_from_coordinates</STRONG> (ARM, 124 bytes, Stack size 4 bytes, library.o(i.get_enemy_from_coordinates))
+<BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = get_enemy_from_coordinates
+</UL>
+<BR>[Called By]<UL><LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_char_at
 <LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;collides
 </UL>
 

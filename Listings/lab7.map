@@ -41,6 +41,7 @@ Section Cross References
     library.o(i.get_char_at) refers to library.o(i.get_enemy_type) for get_enemy_type
     library.o(i.get_char_at) refers to library.o(i.get_enemy_char) for get_enemy_char
     library.o(i.get_enemy_alive) refers to library.o(.data) for enemies_bot
+    library.o(i.get_enemy_from_coordinates) refers to library.o(.data) for enemy_loc_off_y
     library.o(i.get_shield_type) refers to library.o(i.get_shield_from_coordinates) for get_shield_from_coordinates
     library.o(i.get_shield_type) refers to library.o(.data) for shields_types
     library.o(i.get_shield_type_int) refers to library.o(i.get_shield_from_coordinates) for get_shield_from_coordinates
@@ -348,30 +349,30 @@ Image Symbol Table
     .text                                    0x0000048c   Section        0  indicate_semi.o(.text)
     i.collides                               0x0000049c   Section        0  library.o(i.collides)
     i.do_tick                                0x000005e0   Section        0  library.o(i.do_tick)
-    i.draw_board                             0x00000758   Section        0  library.o(i.draw_board)
-    i.draw_intro                             0x000007a8   Section        0  library.o(i.draw_intro)
-    i.get_char_at                            0x00000a48   Section        0  library.o(i.get_char_at)
-    i.get_enemy_alive                        0x00000b60   Section        0  library.o(i.get_enemy_alive)
-    i.get_enemy_char                         0x00000bd8   Section        0  library.o(i.get_enemy_char)
-    i.get_enemy_from_coordinates             0x00000c10   Section        0  library.o(i.get_enemy_from_coordinates)
-    i.get_enemy_type                         0x00000c6c   Section        0  library.o(i.get_enemy_type)
-    i.get_shield_from_coordinates            0x00000c98   Section        0  library.o(i.get_shield_from_coordinates)
-    i.get_shield_type                        0x00000d6c   Section        0  library.o(i.get_shield_type)
-    i.get_shield_type_int                    0x00000dc0   Section        0  library.o(i.get_shield_type_int)
-    i.handle_input                           0x00000e0c   Section        0  library.o(i.handle_input)
-    i.is_instructions                        0x00000eb4   Section        0  library.o(i.is_instructions)
-    i.is_player                              0x00000ed8   Section        0  library.o(i.is_player)
-    i.is_player_bullet                       0x00000f14   Section        0  library.o(i.is_player_bullet)
-    i.is_playing                             0x00000f50   Section        0  library.o(i.is_playing)
-    i.is_shield                              0x00000f74   Section        0  library.o(i.is_shield)
-    i.is_shield_alive                        0x00000f9c   Section        0  library.o(i.is_shield_alive)
-    i.main                                   0x00000fdc   Section        0  lab7wrapper.o(i.main)
-    i.pseudo_printf                          0x00000ff0   Section        0  library.o(i.pseudo_printf)
-    i.set_enemy_alive                        0x00001014   Section        0  library.o(i.set_enemy_alive)
-    i.set_shield_alive                       0x00001058   Section        0  library.o(i.set_shield_alive)
-    i.set_shield_type                        0x0000109c   Section        0  library.o(i.set_shield_type)
-    i.shoot                                  0x000010e0   Section        0  library.o(i.shoot)
-    .constdata                               0x00001128   Section      258  library.o(.constdata)
+    i.draw_board                             0x00000788   Section        0  library.o(i.draw_board)
+    i.draw_intro                             0x000007d8   Section        0  library.o(i.draw_intro)
+    i.get_char_at                            0x00000a78   Section        0  library.o(i.get_char_at)
+    i.get_enemy_alive                        0x00000b90   Section        0  library.o(i.get_enemy_alive)
+    i.get_enemy_char                         0x00000c08   Section        0  library.o(i.get_enemy_char)
+    i.get_enemy_from_coordinates             0x00000c40   Section        0  library.o(i.get_enemy_from_coordinates)
+    i.get_enemy_type                         0x00000cc4   Section        0  library.o(i.get_enemy_type)
+    i.get_shield_from_coordinates            0x00000cf0   Section        0  library.o(i.get_shield_from_coordinates)
+    i.get_shield_type                        0x00000dc4   Section        0  library.o(i.get_shield_type)
+    i.get_shield_type_int                    0x00000e18   Section        0  library.o(i.get_shield_type_int)
+    i.handle_input                           0x00000e64   Section        0  library.o(i.handle_input)
+    i.is_instructions                        0x00000f0c   Section        0  library.o(i.is_instructions)
+    i.is_player                              0x00000f30   Section        0  library.o(i.is_player)
+    i.is_player_bullet                       0x00000f6c   Section        0  library.o(i.is_player_bullet)
+    i.is_playing                             0x00000fa8   Section        0  library.o(i.is_playing)
+    i.is_shield                              0x00000fcc   Section        0  library.o(i.is_shield)
+    i.is_shield_alive                        0x00000ff4   Section        0  library.o(i.is_shield_alive)
+    i.main                                   0x00001034   Section        0  lab7wrapper.o(i.main)
+    i.pseudo_printf                          0x00001048   Section        0  library.o(i.pseudo_printf)
+    i.set_enemy_alive                        0x0000106c   Section        0  library.o(i.set_enemy_alive)
+    i.set_shield_alive                       0x000010b0   Section        0  library.o(i.set_shield_alive)
+    i.set_shield_type                        0x000010f4   Section        0  library.o(i.set_shield_type)
+    i.shoot                                  0x00001138   Section        0  library.o(i.shoot)
+    .constdata                               0x00001180   Section      258  library.o(.constdata)
     interrupts                               0x40000000   Section      508  lab7.o(interrupts)
     enemies                                  0x40000000   Data           5  lab7.o(interrupts)
     library7                                 0x400001fc   Section      828  library7.o(library7)
@@ -489,32 +490,32 @@ Image Symbol Table
     __semihosting_library_function           0x0000048c   ARM Code       0  indicate_semi.o(.text)
     Long ARM to ARM Veneer to lab7           0x00000494   ARM Code       8  anon$$obj.o(Veneer$$Code)
     collides                                 0x0000049c   ARM Code     316  library.o(i.collides)
-    do_tick                                  0x000005e0   ARM Code     340  library.o(i.do_tick)
-    draw_board                               0x00000758   ARM Code      80  library.o(i.draw_board)
-    draw_intro                               0x000007a8   ARM Code     672  library.o(i.draw_intro)
-    get_char_at                              0x00000a48   ARM Code     252  library.o(i.get_char_at)
-    get_enemy_alive                          0x00000b60   ARM Code     116  library.o(i.get_enemy_alive)
-    get_enemy_char                           0x00000bd8   ARM Code      44  library.o(i.get_enemy_char)
-    get_enemy_from_coordinates               0x00000c10   ARM Code      92  library.o(i.get_enemy_from_coordinates)
-    get_enemy_type                           0x00000c6c   ARM Code      44  library.o(i.get_enemy_type)
-    get_shield_from_coordinates              0x00000c98   ARM Code     212  library.o(i.get_shield_from_coordinates)
-    get_shield_type                          0x00000d6c   ARM Code      72  library.o(i.get_shield_type)
-    get_shield_type_int                      0x00000dc0   ARM Code      72  library.o(i.get_shield_type_int)
-    handle_input                             0x00000e0c   ARM Code     156  library.o(i.handle_input)
-    is_instructions                          0x00000eb4   ARM Code      36  library.o(i.is_instructions)
-    is_player                                0x00000ed8   ARM Code      52  library.o(i.is_player)
-    is_player_bullet                         0x00000f14   ARM Code      52  library.o(i.is_player_bullet)
-    is_playing                               0x00000f50   ARM Code      32  library.o(i.is_playing)
-    is_shield                                0x00000f74   ARM Code      40  library.o(i.is_shield)
-    is_shield_alive                          0x00000f9c   ARM Code      60  library.o(i.is_shield_alive)
-    main                                     0x00000fdc   ARM Code      20  lab7wrapper.o(i.main)
-    pseudo_printf                            0x00000ff0   ARM Code      36  library.o(i.pseudo_printf)
-    set_enemy_alive                          0x00001014   ARM Code      64  library.o(i.set_enemy_alive)
-    set_shield_alive                         0x00001058   ARM Code      64  library.o(i.set_shield_alive)
-    set_shield_type                          0x0000109c   ARM Code      64  library.o(i.set_shield_type)
-    shoot                                    0x000010e0   ARM Code      56  library.o(i.shoot)
-    Region$$Table$$Base                      0x0000122c   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x0000124c   Number         0  anon$$obj.o(Region$$Table)
+    do_tick                                  0x000005e0   ARM Code     384  library.o(i.do_tick)
+    draw_board                               0x00000788   ARM Code      80  library.o(i.draw_board)
+    draw_intro                               0x000007d8   ARM Code     672  library.o(i.draw_intro)
+    get_char_at                              0x00000a78   ARM Code     252  library.o(i.get_char_at)
+    get_enemy_alive                          0x00000b90   ARM Code     116  library.o(i.get_enemy_alive)
+    get_enemy_char                           0x00000c08   ARM Code      44  library.o(i.get_enemy_char)
+    get_enemy_from_coordinates               0x00000c40   ARM Code     124  library.o(i.get_enemy_from_coordinates)
+    get_enemy_type                           0x00000cc4   ARM Code      44  library.o(i.get_enemy_type)
+    get_shield_from_coordinates              0x00000cf0   ARM Code     212  library.o(i.get_shield_from_coordinates)
+    get_shield_type                          0x00000dc4   ARM Code      72  library.o(i.get_shield_type)
+    get_shield_type_int                      0x00000e18   ARM Code      72  library.o(i.get_shield_type_int)
+    handle_input                             0x00000e64   ARM Code     156  library.o(i.handle_input)
+    is_instructions                          0x00000f0c   ARM Code      36  library.o(i.is_instructions)
+    is_player                                0x00000f30   ARM Code      52  library.o(i.is_player)
+    is_player_bullet                         0x00000f6c   ARM Code      52  library.o(i.is_player_bullet)
+    is_playing                               0x00000fa8   ARM Code      32  library.o(i.is_playing)
+    is_shield                                0x00000fcc   ARM Code      40  library.o(i.is_shield)
+    is_shield_alive                          0x00000ff4   ARM Code      60  library.o(i.is_shield_alive)
+    main                                     0x00001034   ARM Code      20  lab7wrapper.o(i.main)
+    pseudo_printf                            0x00001048   ARM Code      36  library.o(i.pseudo_printf)
+    set_enemy_alive                          0x0000106c   ARM Code      64  library.o(i.set_enemy_alive)
+    set_shield_alive                         0x000010b0   ARM Code      64  library.o(i.set_shield_alive)
+    set_shield_type                          0x000010f4   ARM Code      64  library.o(i.set_shield_type)
+    shoot                                    0x00001138   ARM Code      56  library.o(i.shoot)
+    Region$$Table$$Base                      0x00001284   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x000012a4   Number         0  anon$$obj.o(Region$$Table)
     lab7                                     0x40000010   ARM Code       0  lab7.o(interrupts)
     FIQ_Handler                              0x400000f0   ARM Code       0  lab7.o(interrupts)
     uart_init                                0x4000023c   ARM Code       0  library7.o(library7)
@@ -562,9 +563,9 @@ Memory Map of the image
 
   Image Entry point : 0x0000010c
 
-  Load Region LR_IROM1 (Base: 0x00000000, Size: 0x000017d8, Max: 0x00080000, ABSOLUTE, COMPRESSED[0x000015b4])
+  Load Region LR_IROM1 (Base: 0x00000000, Size: 0x00001830, Max: 0x00080000, ABSOLUTE, COMPRESSED[0x0000160c])
 
-    Execution Region ER_IROM1 (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x0000124c, Max: 0x00080000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x000012a4, Max: 0x00080000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -633,36 +634,36 @@ Memory Map of the image
     0x0000048c   0x0000048c   0x00000008   Ven    RO          397    Veneer$$Code        anon$$obj.o
     0x00000494   0x00000494   0x00000008   Ven    RO          398    Veneer$$Code        anon$$obj.o
     0x0000049c   0x0000049c   0x00000144   Code   RO           16    i.collides          library.o
-    0x000005e0   0x000005e0   0x00000178   Code   RO           17    i.do_tick           library.o
-    0x00000758   0x00000758   0x00000050   Code   RO           18    i.draw_board        library.o
-    0x000007a8   0x000007a8   0x000002a0   Code   RO           19    i.draw_intro        library.o
-    0x00000a48   0x00000a48   0x00000118   Code   RO           20    i.get_char_at       library.o
-    0x00000b60   0x00000b60   0x00000078   Code   RO           21    i.get_enemy_alive   library.o
-    0x00000bd8   0x00000bd8   0x00000038   Code   RO           22    i.get_enemy_char    library.o
-    0x00000c10   0x00000c10   0x0000005c   Code   RO           23    i.get_enemy_from_coordinates  library.o
-    0x00000c6c   0x00000c6c   0x0000002c   Code   RO           24    i.get_enemy_type    library.o
-    0x00000c98   0x00000c98   0x000000d4   Code   RO           26    i.get_shield_from_coordinates  library.o
-    0x00000d6c   0x00000d6c   0x00000054   Code   RO           27    i.get_shield_type   library.o
-    0x00000dc0   0x00000dc0   0x0000004c   Code   RO           28    i.get_shield_type_int  library.o
-    0x00000e0c   0x00000e0c   0x000000a8   Code   RO           29    i.handle_input      library.o
-    0x00000eb4   0x00000eb4   0x00000024   Code   RO           30    i.is_instructions   library.o
-    0x00000ed8   0x00000ed8   0x0000003c   Code   RO           31    i.is_player         library.o
-    0x00000f14   0x00000f14   0x0000003c   Code   RO           32    i.is_player_bullet  library.o
-    0x00000f50   0x00000f50   0x00000024   Code   RO           33    i.is_playing        library.o
-    0x00000f74   0x00000f74   0x00000028   Code   RO           34    i.is_shield         library.o
-    0x00000f9c   0x00000f9c   0x00000040   Code   RO           35    i.is_shield_alive   library.o
-    0x00000fdc   0x00000fdc   0x00000014   Code   RO            6    i.main              lab7wrapper.o
-    0x00000ff0   0x00000ff0   0x00000024   Code   RO           36    i.pseudo_printf     library.o
-    0x00001014   0x00001014   0x00000044   Code   RO           37    i.set_enemy_alive   library.o
-    0x00001058   0x00001058   0x00000044   Code   RO           38    i.set_shield_alive  library.o
-    0x0000109c   0x0000109c   0x00000044   Code   RO           39    i.set_shield_type   library.o
-    0x000010e0   0x000010e0   0x00000048   Code   RO           40    i.shoot             library.o
-    0x00001128   0x00001128   0x00000102   Data   RO           41    .constdata          library.o
-    0x0000122a   0x0000122a   0x00000002   PAD
-    0x0000122c   0x0000122c   0x00000020   Data   RO          385    Region$$Table       anon$$obj.o
+    0x000005e0   0x000005e0   0x000001a8   Code   RO           17    i.do_tick           library.o
+    0x00000788   0x00000788   0x00000050   Code   RO           18    i.draw_board        library.o
+    0x000007d8   0x000007d8   0x000002a0   Code   RO           19    i.draw_intro        library.o
+    0x00000a78   0x00000a78   0x00000118   Code   RO           20    i.get_char_at       library.o
+    0x00000b90   0x00000b90   0x00000078   Code   RO           21    i.get_enemy_alive   library.o
+    0x00000c08   0x00000c08   0x00000038   Code   RO           22    i.get_enemy_char    library.o
+    0x00000c40   0x00000c40   0x00000084   Code   RO           23    i.get_enemy_from_coordinates  library.o
+    0x00000cc4   0x00000cc4   0x0000002c   Code   RO           24    i.get_enemy_type    library.o
+    0x00000cf0   0x00000cf0   0x000000d4   Code   RO           26    i.get_shield_from_coordinates  library.o
+    0x00000dc4   0x00000dc4   0x00000054   Code   RO           27    i.get_shield_type   library.o
+    0x00000e18   0x00000e18   0x0000004c   Code   RO           28    i.get_shield_type_int  library.o
+    0x00000e64   0x00000e64   0x000000a8   Code   RO           29    i.handle_input      library.o
+    0x00000f0c   0x00000f0c   0x00000024   Code   RO           30    i.is_instructions   library.o
+    0x00000f30   0x00000f30   0x0000003c   Code   RO           31    i.is_player         library.o
+    0x00000f6c   0x00000f6c   0x0000003c   Code   RO           32    i.is_player_bullet  library.o
+    0x00000fa8   0x00000fa8   0x00000024   Code   RO           33    i.is_playing        library.o
+    0x00000fcc   0x00000fcc   0x00000028   Code   RO           34    i.is_shield         library.o
+    0x00000ff4   0x00000ff4   0x00000040   Code   RO           35    i.is_shield_alive   library.o
+    0x00001034   0x00001034   0x00000014   Code   RO            6    i.main              lab7wrapper.o
+    0x00001048   0x00001048   0x00000024   Code   RO           36    i.pseudo_printf     library.o
+    0x0000106c   0x0000106c   0x00000044   Code   RO           37    i.set_enemy_alive   library.o
+    0x000010b0   0x000010b0   0x00000044   Code   RO           38    i.set_shield_alive  library.o
+    0x000010f4   0x000010f4   0x00000044   Code   RO           39    i.set_shield_type   library.o
+    0x00001138   0x00001138   0x00000048   Code   RO           40    i.shoot             library.o
+    0x00001180   0x00001180   0x00000102   Data   RO           41    .constdata          library.o
+    0x00001282   0x00001282   0x00000002   PAD
+    0x00001284   0x00001284   0x00000020   Data   RO          385    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x40000000, Load base: 0x0000124c, Size: 0x00000a78, Max: 0x00008000, ABSOLUTE, COMPRESSED[0x00000368])
+    Execution Region RW_IRAM1 (Exec base: 0x40000000, Load base: 0x000012a4, Size: 0x00000a78, Max: 0x00008000, ABSOLUTE, COMPRESSED[0x00000368])
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -684,12 +685,12 @@ Image component sizes
 
        508         76          0          0          0        348   lab7.o
         20          0          0          0          0       1867   lab7wrapper.o
-      3192        640        258         84          0      13639   library.o
+      3280        652        258         84          0      13703   library.o
        828        112          0          0          0        388   library7.o
        300         60          0          0       1160        500   startup.o
 
     ----------------------------------------------------------------------
-      4864        896        292         84       1160      16742   Object Totals
+      4952        908        292         84       1160      16806   Object Totals
         16          8         32          0          0          0   (incl. Generated)
          0          0          2          0          0          0   (incl. Padding)
 
@@ -739,15 +740,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      5728        916        292         84       1260      16198   Grand Totals
-      5728        916        292        872       1260      16198   ELF Image Totals (compressed)
-      5728        916        292        872          0          0   ROM Totals
+      5816        928        292         84       1260      16262   Grand Totals
+      5816        928        292        872       1260      16262   ELF Image Totals (compressed)
+      5816        928        292        872          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 6020 (   5.88kB)
+    Total RO  Size (Code + RO Data)                 6108 (   5.96kB)
     Total RW  Size (RW Data + ZI Data)              1344 (   1.31kB)
-    Total ROM Size (Code + RO Data + RW Data)       6892 (   6.73kB)
+    Total ROM Size (Code + RO Data + RW Data)       6980 (   6.82kB)
 
 ==============================================================================
 

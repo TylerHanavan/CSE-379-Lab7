@@ -98,7 +98,7 @@ int get_enemy_from_coordinates(int x, int y) {
 	
 	for(int j = 0; j < 5; j++) {
 		for(int i = 0; i < 7; i++) {
-			if(y == 6 - j && x == 7 + i) return i + j * 7;
+			if(y == 6 - j + enemy_loc_off_y && x == 7 + i + enemy_loc_off_x) return i + j * 7;
 		}
 	}
 	
@@ -276,6 +276,12 @@ void do_tick() {
 			}
 			collides();
 			draw_board();
+		
+			if(tick % 50 == 0) {
+				
+				enemy_loc_off_x++;
+				
+			}
 		}
 		
 	}
