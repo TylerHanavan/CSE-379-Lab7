@@ -33,6 +33,11 @@
 	EXTERN get_score_level
 	EXTERN score_level_
 
+	EXTERN number_to_memory
+	
+	EXTERN clear_input
+	EXTERN get_input
+		
 enemies = "////",0
 shields_alive = "////",0    
 shields_type = "////",0   
@@ -70,10 +75,6 @@ lab7_loop
 lab7_end
 
 	BL clear_display
-	
-	LDR r6, =score_level_
-	MOV lr, pc
-	BX r6
 	
 	LDMFD sp!,{lr}
 
@@ -227,6 +228,93 @@ TIMER0LOOP
 	MOV lr, pc
 	BX r2
 	
+	LDR r6, =get_score_level
+	MOV lr, pc
+	BX r6
+	
+	BL number_to_memory
+	
+	CMP r7, #0
+	BEQ cycle_1
+
+	CMP r7, #1
+	BEQ cycle_2
+
+	CMP r7, #2
+	BEQ cycle_3
+
+	CMP r7, #3
+	BEQ cycle_4
+		
+	B FIQ_Exit
+	
+cycle_1
+	MOV r0, #0
+	BL get_input
+	
+	BL from_ascii
+	
+	MOV r0, r4
+	
+	MOV r4, #0
+	
+	BL clear_display
+	BL change_display_digit
+
+	ADD r7, r7, #1
+
+	B FIQ_Exit
+
+cycle_2
+	MOV r0, #1
+	BL get_input
+	
+	BL from_ascii
+
+	MOV r0, r4
+	
+	MOV r4, #1
+	
+	BL clear_display
+	BL change_display_digit
+
+	ADD r7, r7, #1
+
+	B FIQ_Exit
+
+cycle_3
+	MOV r0, #2
+	BL get_input
+	
+	BL from_ascii
+	
+	MOV r0, r4
+	
+	MOV r4, #2
+
+	BL clear_display
+	BL change_display_digit
+
+	ADD r7, r7, #1
+
+	B FIQ_Exit
+
+cycle_4
+	MOV r0, #3
+	BL get_input
+	
+	BL from_ascii
+	
+
+	MOV r0, r4
+	
+	MOV r4, #3
+
+	BL clear_display
+	BL change_display_digit
+
+	MOV r7, #0
+	BL clear_input
 	B FIQ_Exit
 	
 R0_RESET
