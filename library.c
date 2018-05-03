@@ -20,6 +20,7 @@ int enemy_bullet_y = -1;
 
 int enemy_loc_off_x = 0;
 int enemy_loc_off_y = 0;
+int enemyDir = 0;
 
 int lives = 3;
 
@@ -55,6 +56,15 @@ int is_shield_alive(int loc) {
 	if(loc == -1) return 0;
 	return (shields & (1 << loc)) > 0 ? 1 : 0;
 }
+
+int get_random(int offset, int tick) {
+	return tick % offset;
+}
+
+int get_random_bool(int tick) {
+	return tick % 2 == 0;	
+}
+
 
 int get_shield_from_coordinates(int x, int y) {
 	
@@ -219,7 +229,7 @@ void draw_intro() {
 		pseudo_printf("Press [SPACE] now to advance through these instructions.\r\n\0");
 	}
 	if(gameState == 2) {
-		pseudo_printf("    Controls\r\n\0");
+		pseudo_printf("    How to Play\r\n\0");
 		pseudo_printf("An S and s are shields. Former being a strong version, latter being a weaker one.\r\n\0");
 		pseudo_printf("If a bullet hits a weak shield, the shield is destroyed. Bullets will weaken strong\r\n\0");
 		pseudo_printf("shields. Bullets will cause the player to loses lives upon hitting it. Enemies\r\n\0");
@@ -262,10 +272,13 @@ void do_tick() {
 		gameState = 3;
 	
 	if(is_playing()) {
-	
-		player_x_ += next_x_;
 		
-		next_x_ = 0;
+		if(enemyDir == 0) {
+			if(get_random_bool(tick))
+				enemyDir = 1;
+			else
+				enemyDir = -1;
+		}
 		
 		if(player_x_ < 1) player_x_ = 1;
 		if(player_x_ > 19) player_x_ = 19;
@@ -276,12 +289,20 @@ void do_tick() {
 			}
 			collides();
 			draw_board();
+			player_x_ += next_x_;
 		
 			if(tick % 50 == 0) {
 				
-				enemy_loc_off_x++;
+				enemy_loc_off_x += enemyDir;
+			
+				if(enemy_loc_off_x > 5 || enemy_loc_off_x < -5) {
+					enemyDir -= enemyDir * 2;
+					enemy_loc_off_y++;
+				}
 				
 			}
+		
+			next_x_ = 0;
 		}
 		
 	}
