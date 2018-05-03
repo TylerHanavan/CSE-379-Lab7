@@ -308,11 +308,15 @@ output_character_2
 	CMP r5, #32					;if the fifth bit is 1, then we are ready to transmit
 	BNE output_character_2		;else we redo the process
 	
+	CMP r0, #0
+	BEQ output_character_skip
+	
 	; Transmitting
 	
 	LDR r5, =0xE000C000			;loads the address of the transmit holding register (same as receive buffer)
 	
 	STR r0, [r5]				;stores the value of r0 into the address at r5
+output_character_skip
 	LDMFD sp!, {lr, r3, r6, r5}
 	BX lr
 		
