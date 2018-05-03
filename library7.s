@@ -14,9 +14,15 @@
 	EXPORT change_display_digit
 
 	EXPORT from_ascii
+	EXPORT number_to_memory
+	
+	EXPORT clear_input
+	EXPORT get_input
 		
+input = "    ",0
+in_count = "0",0
 digits_SET   
-    DCD 0x00003780  ; 0 
+	DCD 0x00003780  ; 0
     DCD 0x00003000  ; 1  
 	DCD 0x00009580	; 2
 	DCD 0x00008780	; 3
@@ -340,9 +346,31 @@ new_line
 	LDMFD sp!, {lr, r0, r10}
 	BX lr
 	
-gi_fix
-	MOV r1, #0x30
+clear_input
+	STMFD SP!, {lr, r1-r5}
 	
+	LDR r0, =in_count			; Load in_count address
+	MOV r1, #0x30
+	BL to_mem
+	
+	LDMFD SP!, {lr, r1-r5}
+	BX lr
+	
+get_input						;Return char in memory at r0 (0 for 1st; 3 for 4th)
+	STMFD SP!, {lr, r1-r5}
+
+	MOV r2, r0					;Which char -> r2
+
+	LDR r0, =input
+	ADD r0, r0, r2				;increment address by r2
+	BL from_mem
+	
+	CMP r1, #0x30
+	BLT gi_fix
+	
+	B gi_end
+gi_fix
+	MOV r1, #0x30	
 gi_end
 	MOV r0, r1
 
@@ -364,6 +392,126 @@ from_mem								;r0 - memory address, return contents - r1
 	
 	LDMFD SP!, {lr, r2-r5}
 	BX lr
+	
+store_input
+	STMFD SP!, {lr, r1-r5}
+
+	; IN r0 - contents of key pressed
+
+	MOV r3, r0
+
+	LDR r0, =in_count			; Load in_count address
+	BL from_mem					; Get value of in_count
+	
+	MOV r0, r1
+	BL from_ascii
+	
+	MOV r1, r4
+
+	LDR r0, =input				; Load input address
+	ADD r0, r0, r1				; Pre-increment r0 (address) by r1 (# of elements). 
+	
+	MOV r4, r1
+	
+	MOV r1, r3
+	
+	BL to_mem
+	
+	LDR r0, =in_count
+	MOV r1, r4
+	ADD r1, r1, #0x30
+	ADD r1, r1, #1
+	
+	BL to_mem
+
+	LDMFD SP!, {lr, r1-r5}
+	BX lr
+	
+number_to_memory
+	STMFD SP!, {lr}
+	;CMP r9, #0			;Compare r9 to 0
+	;BGT neg_skip			;Branch greater than neg_skip
+	;BL insert_neg			;Branch/link insert_neg
+
+	;MVN r9, r9			;
+	;ADD r9, r9, #1			;Two's compliment r9
+
+;neg_skip
+		
+	;MOV r0, r9	
+	MOV r9, r0
+	MOV r12, #1000			;r12 = 1000
+	MOV r7, #0			;r7 = 0
+	BL aaa				;Branch/link aaa
+	MOV r0, #0			;r0 = 0
+	ADD r0, r6, #0x30		;r0 = r6 + 0x30
+	BL store_input		;Branch/link output_character
+	
+	MOV r12, #100	 		;r12 = 100
+	MOV r7, #1000			;r7 = 1000
+	BL aaa			 	;Branch/link aaa
+	MOV r0, #0		;r0 = 0
+	ADD r0, r6, #0x30		;r0 = r6 + 0x30
+	BL store_input		;Branch/link output_character
+	
+	MOV r12, #10			;r12 = 10	
+	MOV r7, #100			;r7 = 100
+	BL aaa			  	;Branch/link aaa
+	MOV r0, #0		;r0 = 0
+	ADD r0, r6, #0x30		;r0 = r6 + 0x30
+	BL store_input		;Branch/link output_character
+
+	MOV r12, #1			;r12 = 1		 
+	MOV r7, #10			;r7 = 10
+	BL aaa				;Branch/link aaa
+	MOV r0, #0			;r0 = 0
+	ADD r0, r6, #0x30		;r0 = r6 + 0x30
+	BL store_input		;Branch/link output_character
+	
+	LDMFD SP!, {lr}
+	BX lr	
+	
+	
+aaa					;Subroutine to get single digit of a number
+    STMFD SP!,{lr}			;Preserve stack
+    MOV r6, #0	   		;r6 = 0
+    MOV r5, r9			;r5 = r9
+aab					;Begin aab subroutine
+		
+	CMP r7, #0			;Compare r7 to 0
+	BEQ aab_skip			;branch if equal -> aab_skip
+
+aab_retry				;Check if r5 is too large compared to r7
+	CMP r5, r7			;Compare r5 t0 r7
+	BLE aab_skip			;branch if less than or equal -> aab_skip
+	SUB r5, r5, r7			;r5 = r5 - r7
+	B aab_retry			;Branch to aab_retry
+
+aab_skip				;r5 is within bounds, now loop subtracting r12 from it
+
+    CMP r5, r12				;Compare r5 to r12
+    BLT aad				;Branch less than aad
+
+    SUB r5, r5, r12			;r5 = r5 - r12
+    ADD r6, r6, #1			;decrement r6
+
+    CMP r5, #0				;Compare r5 to 0
+    BGT aab				;Branch if greater than -> aab
+
+aac					;Reset r6 if needed
+
+	CMP r6, #10			;Compare r6 to 10
+	BLT aad				;Branch if less than -> aad
+
+	MOV r6, #0			;r6 = 0
+
+aad
+
+    LDMFD sp!, {lr}			;Preserve stack
+    BX lr				;Move pc,lr
+	
+last					;Program is done
+
 
 quit
 	MOV r7, #5
