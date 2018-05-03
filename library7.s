@@ -296,14 +296,22 @@ read_character_break
 	BX lr
 
 output_character 				;Begin Transmit Character block
-	STMFD SP!,{lr, r3, r6, r5}
+	STMFD SP!,{lr, r3, r6, r5, r7, r8}
+	MOV r7, #0					;prevent infinite loops
+	LDR r8, =10000
 output_character_2
 	LDR r3, =0xE000C014			;loads address of uart0 into register r3
+	
 	
 	LDRB r6, [r3]				;loads bytes at address r3 into r6 (RXFE - RDR)
 	
 	MOV r5, #32					;immediate value 32 (00010000) copied into r5		
 	AND r5, r6, r5				;logically AND r6 and r5 to compare the 5th bit(THRE) of r6
+	
+	ADD r7, r7, #1				;to prevent infinite looping
+	
+	CMP r7, r8
+	BEQ output_character_skip
 	
 	CMP r5, #32					;if the fifth bit is 1, then we are ready to transmit
 	BNE output_character_2		;else we redo the process
@@ -317,7 +325,7 @@ output_character_2
 	
 	STR r0, [r5]				;stores the value of r0 into the address at r5
 output_character_skip
-	LDMFD sp!, {lr, r3, r6, r5}
+	LDMFD sp!, {lr, r3, r6, r5, r7, r8}
 	BX lr
 		
 output_string

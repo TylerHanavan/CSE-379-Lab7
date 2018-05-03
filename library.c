@@ -24,7 +24,7 @@ int enemyDir = 0;
 
 int lives = 3;
 
-int score_level_ = 0;
+int score_level_ = 200;
 int score_total_;
 
 int enemies_bot = 0xFFFFFFFF;
@@ -61,18 +61,17 @@ int is_instructions() {
 
 char to_ascii(int i) {
 
-	if(i < 30) return '\0';
-	if(i < 40) return i + 30;
-
-	return i;
+	return i + 0x30;
 
 }
 
 int power(int b, int p) {
-	if(p == 0) return 1;
-	if(p == 1) return b;
-	while(p-- > 0) b *= b;
-	return b;
+	int r = 1;
+	while(p != 0) {
+		r *= b;
+		p--;
+	}
+	return r;
 }
 
 void pseudo_printf(char c[]) {
@@ -80,26 +79,30 @@ void pseudo_printf(char c[]) {
 }
 
 void print_num(int n) {
-
+	
 	int b = 0;
-
-	for(int i = 0; i < 6; i++) {
-
+	
+	for(int i = 4; i >= 0; i--) {
+		
 		int c = power(10, i);
 		int r = 0;
+		
+		if(c > n) {
+			if(b == 1)
+				output_character(0x30);
+			continue;
+		}
+		
 		while(n >= c) {
-
 			b = 1;
+			n -= c;
 			r++;
-
 		}
-
-		if(b == 1) {
-
-			output_character(to_ascii(r));
-
-		}
-
+		
+		char v = to_ascii(r);
+		
+		output_character(v);
+		
 	}
 
 }
@@ -183,7 +186,7 @@ int get_enemy_from_coordinates(int x, int y) {
 int get_enemy_alive(int loc){
 	if(loc == -1) return 0;
 	if(loc > 35) return 0;
-	if(loc > 30) return (enemies_bot & (1 << (loc - 30))) > 0 ? 1 : 0;
+	if(loc > 30) return (enemies_top & (1 << (loc - 30))) > 0 ? 1 : 0;
 	return (enemies_bot & (1 << loc)) > 0 ? 1 : 0;
 }
 
@@ -204,6 +207,11 @@ char* get_enemy_char(int type){
 }
 
 void set_enemy_alive(int loc, int alive){
+	if(loc > 30) {
+		if(alive == 1) enemies_top = enemies_top | (1 << (loc - 30));
+		else enemies_top = enemies_top & ~(1 << (loc - 30));	
+		return;
+	}
 	if(alive == 1) enemies_bot = enemies_bot | (1 << loc);
 	else enemies_bot = enemies_bot & ~(1 << loc);		
 }
@@ -224,6 +232,22 @@ int collides() {
 		return 1;
 	}
 	
+	
+	
+	if(is_shield(enemy_bullet_x, enemy_bullet_y)) {
+		int id = get_shield_from_coordinates(enemy_bullet_x, enemy_bullet_y);
+		if(is_shield_alive(id)){
+			 if(get_shield_type_int(enemy_bullet_x, enemy_bullet_y) == 0) {
+				 set_shield_alive(id, 0);
+			 } else {
+					set_shield_type(get_shield_from_coordinates(enemy_bullet_x, enemy_bullet_y), 0);
+			 }
+			enemy_bullet_x = -1;
+			enemy_bullet_y = -1;
+		}
+		return 1;
+	}
+	
 	int id = get_enemy_from_coordinates(player_bullet_x, player_bullet_y);
 	if(id != -1 && get_enemy_alive(id) == 1) {
 			set_enemy_alive(id, 0);
@@ -233,22 +257,31 @@ int collides() {
 		return 1;
 	}
 	
+	//BULLET  HITS PLAYER TODO LOGIC
+	
 	if(player_bullet_y < 1) {
 		player_bullet_x = -1;
 		player_bullet_y = -1;
+	}
+	
+	if(enemy_bullet_y > 15) {
+		enemy_bullet_x = -1;
+		enemy_bullet_y = -1;
 	}
 	
 	return 0;
 	
 }
 
-
+int is_enemy_bullet(int x, int y) {
+	return x == enemy_bullet_x && y == enemy_bullet_y;
+}
 
 // GAME BOARD \\
 
 char* get_char_at(int x, int y) {
 	
-	if(x == 0) return "|\0";
+	if(x == 0) return "\x1b[31m|\0";
 	if(x == 20) return "|\n\r\0";
 	
 	if(y == 0 || y == 14) return "-\0";
@@ -257,11 +290,21 @@ char* get_char_at(int x, int y) {
 	
 	if(is_player(x, y)) return "A\0";
 	
+	if(is_player_bullet(x, y) && is_enemy_bullet(x, y))
+		return "~\0";
+	
 	if(is_player_bullet(x, y)) return "^\0";
+	
+	if(is_enemy_bullet(x, y)) return "v\0";
 	
 	if(get_enemy_from_coordinates(x,y) != -1 && get_enemy_alive(get_enemy_from_coordinates(x,y)) == 1) return get_enemy_char(get_enemy_type(get_enemy_from_coordinates(x,y)));
 	
 	return " \0";
+	
+}
+
+void draw_score() {
+	
 	
 }
 
@@ -271,6 +314,8 @@ void draw_board() {
 	
 	for(int j = 0; j < 15; j++) {
 		for(int i = 0; i < 21; i++) {
+			
+			if(j == 0 && i == 20) { draw_score(); }
 			
 			pseudo_printf(get_char_at(i, j));
 			
@@ -313,9 +358,9 @@ void draw_paused() {
 
 	pseudo_printf("\r\nYour score is: \0");
 	
-	print_num(get_score());
+	print_num(get_score_level());
 
-	pseudo_printf(": Press [i] to resume game\r\n\0");
+	pseudo_printf(" | Press [i] to resume game\r\n\0");
 
 	for(int i = 0; i < 20; i++) pseudo_printf("-\0");
 
@@ -327,10 +372,43 @@ int enemy_can_shoot() {
 
 }
 
-void enemy_shoot(int offset) {
-
+int get_enemy_open(int offset) {
 	
+	if(offset > 50)
+		return -1;
+	
+	int loc = get_random(7, tick + offset);
+	
+	while(get_enemy_alive(loc) == 0) {
+		
+		if(loc > 35)
+			return get_enemy_open(offset+1);
+			
+	}
+	
+	return loc;
+	
+}
 
+void enemy_shoot() {
+	
+	if(!enemy_can_shoot()) 
+		return;
+	
+	int loc = get_enemy_open(0);
+		
+	if(loc == -1)
+		return;
+	
+	for(int j = 0; j < 21; j++) {
+		for(int i = 0; i < 15; i++) {
+			if(get_enemy_from_coordinates(i, j) == loc) {
+				enemy_bullet_x = i;
+				enemy_bullet_y = j + 1;
+			}
+		}
+	}
+	
 }
 
 void shoot() {
@@ -389,6 +467,10 @@ void do_tick() {
 			if(player_bullet_x != -1) {
 				player_bullet_y--;
 			}
+			if(enemy_bullet_x != -1) {
+				enemy_bullet_y++;
+			}
+			enemy_shoot();
 			collides();
 			draw_board();
 			player_x_ += next_x_;

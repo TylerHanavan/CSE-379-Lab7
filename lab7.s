@@ -38,6 +38,8 @@
 	EXTERN clear_input
 	EXTERN get_input
 		
+	EXTERN toggle_paused
+		
 enemies = "////",0
 shields_alive = "////",0    
 shields_type = "////",0   
@@ -340,8 +342,9 @@ EINT1			; Check for EINT1 interrupt
 	TST r1, #2
 
 	BEQ FIQ_Keys
-
-	BL toggle_seven_seg
+	
+	LDR r2, =toggle_paused
+	BX r2
 
 	ORR r1, r1, #2		; Clear Interrupt
 
