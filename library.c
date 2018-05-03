@@ -37,6 +37,20 @@ int gameState = 0;
 int nextGameState = 0;
 int outputted = 0;
 
+int paused = 0;
+
+int is_paused() {
+	return paused;
+}
+
+void set_paused(int p) {
+	paused = p;
+}
+
+void toggle_paused() {
+	if(paused > 0) paused = 0; else paused = 1;
+}
+
 int is_playing() {
 	return gameState == 3;
 }
@@ -45,8 +59,49 @@ int is_instructions() {
 	return !is_playing();	
 }
 
+char to_ascii(int i) {
+
+	if(i < 30) return '\0';
+	if(i < 40) return i + 30;
+
+	return i;
+
+}
+
+int power(int b, int p) {
+	if(p == 0) return 1;
+	if(p == 1) return b;
+	while(p-- > 0) b *= b;
+	return b;
+}
+
 void pseudo_printf(char c[]) {
 	while (output_character(*c++)) ;
+}
+
+void print_num(int n) {
+
+	int b = 0;
+
+	for(int i = 0; i < 6; i++) {
+
+		int c = power(10, i);
+		int r = 0;
+		while(n >= c) {
+
+			b = 1;
+			r++;
+
+		}
+
+		if(b == 1) {
+
+			output_character(to_ascii(r));
+
+		}
+
+	}
+
 }
 
 void set_score_level(int type){
@@ -127,6 +182,7 @@ int get_enemy_from_coordinates(int x, int y) {
 
 int get_enemy_alive(int loc){
 	if(loc == -1) return 0;
+	if(loc > 35) return 0;
 	if(loc > 30) return (enemies_bot & (1 << (loc - 30))) > 0 ? 1 : 0;
 	return (enemies_bot & (1 << loc)) > 0 ? 1 : 0;
 }
@@ -249,6 +305,34 @@ void draw_intro() {
 	outputted = 1;
 }
 
+void draw_paused() {
+
+	output_character(0xC);
+
+	for(int i = 0; i < 20; i++) pseudo_printf("-\0");
+
+	pseudo_printf("\r\nYour score is: \0");
+	
+	print_num(get_score());
+
+	pseudo_printf(": Press [i] to resume game\r\n\0");
+
+	for(int i = 0; i < 20; i++) pseudo_printf("-\0");
+
+}
+
+int enemy_can_shoot() {
+
+	return enemy_bullet_x == -1;
+
+}
+
+void enemy_shoot(int offset) {
+
+	
+
+}
+
 void shoot() {
 	if(player_bullet_x == -1) {
 		player_bullet_x = player_x_;
@@ -257,6 +341,7 @@ void shoot() {
 }
 
 void handle_input(char c) {
+	if(c == 0x69) toggle_paused();
 	if(is_playing()) {
 		if(c == 0x61 || c == 0x41) next_x_ = -1;
 		if(c == 0x44 || c == 0x64) next_x_ = 1;
@@ -280,6 +365,13 @@ void do_tick() {
 	
 	if(gameState > 3)
 		gameState = 3;
+
+	if(is_paused()) {
+
+		draw_paused();
+		return;
+
+	}
 	
 	if(is_playing()) {
 		

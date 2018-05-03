@@ -58,18 +58,18 @@ lab7
 	LDR r4, =instructions
 	BL output_string
 	
-check_game_start
-	BL read_character
-	
-	CMP r0, #0x70     		;character 'p'
-	BNE check_game_start
-	
-	BL interrupt_init
+	BL toggle_seven_seg
 	BL clear_display
 	
-	MOV r9, #0
+;check_game_start
+;	BL read_character
 	
-	MOV r8, #2
+;	CMP r0, #0x70     		;character 'p'
+;	BNE check_game_start
+	
+;	BL interrupt_init
+;	BL clear_display
+
 
 lab7_loop
 
