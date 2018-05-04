@@ -13,9 +13,9 @@ extern void illuminate_reset();
 
 int color_ticks = 0;
 
-int level = 0;
+int level = 1;
 
-int lives = 1;
+int lives = 4;
 
 int player_x_ = 10;
 int player_y_ = 13;
@@ -50,7 +50,10 @@ int paused = 0;
 
 int enemy_movement = 800;
 
-int mothership_x = 0;
+int mothership_x = -1;
+int mothership_dir = 0;
+
+int mothership_count = 0;
 
 int dead = 0;
 
@@ -214,6 +217,12 @@ void new_level() {
 	shields = enemies_bot;
 	shields_types = enemies_bot;
 	
+	enemy_loc_off_x = 0;
+	enemy_loc_off_y = 0;
+	
+	mothership_count = 0;
+	mothership_x = -1;
+	
 }
 
 int is_player(int x, int y) {
@@ -310,15 +319,29 @@ void set_enemy_alive(int loc, int alive){
 	else enemies_bot = enemies_bot & ~(1 << loc);		
 }
 
+void do_mothership() {
+	if(mothership_count > 3)
+		return;
+	mothership_count++;
+	if(get_random_bool(tick) == 1) {
+		mothership_dir = 1;
+	} else {
+		mothership_dir = -1;
+	}
+	if(mothership_dir == -1) {
+		mothership_x = 19;
+	} else {
+		mothership_x = 1;
+	}
+}
+
 int collides() {
 	
 	if(enemy_bullet_x == player_x_ && enemy_bullet_y == player_y_) {
 		
 		lives--;
-		
 		enemy_bullet_x = -1;
 		enemy_bullet_y = -1;
-		
 		set_lives();
 		
 	}
@@ -386,7 +409,7 @@ int is_enemy_bullet(int x, int y) {
 
 char* get_char_at(int x, int y) {
 	
-	if(x == 0) return "\x1b[31m|\0";
+	if(x == 0) return "|\0";
 	if(x == 20) return "|\n\r\0";
 	
 	if(y == 0 || y == 14) return "-\0";
@@ -396,13 +419,15 @@ char* get_char_at(int x, int y) {
 	if(is_player(x, y)) return "A\0";
 	
 	if(is_player_bullet(x, y) && is_enemy_bullet(x, y))
-		return "~\0";
+		return "\x1b[31m~\x1b[0m\0";
 	
-	if(is_player_bullet(x, y)) return "^\0";
+	if(is_player_bullet(x, y)) return "\x1b[31m^\x1b[0m\0";
 	
-	if(is_enemy_bullet(x, y)) return "v\0";
+	if(is_enemy_bullet(x, y)) return "\x1b[31mv\x1b[0m\0";
 	
 	if(get_enemy_from_coordinates(x,y) != -1 && get_enemy_alive(get_enemy_from_coordinates(x,y)) == 1) return get_enemy_char(get_enemy_type(get_enemy_from_coordinates(x,y)));
+	
+	if(y == 1 && mothership_x == x) return "X\0";
 	
 	return " \0";
 	
@@ -604,6 +629,13 @@ void do_tick() {
 			if(tick % 500 == 0) {
 				enemy_shoot();
 			}
+			if(tick % 3000) {
+				do_mothership();
+			}
+			if(mothership_x != -1 && tick % 30 == 0)
+				mothership_x += mothership_dir;
+			if(mothership_x > 20 || mothership_x < 0)
+				mothership_x = -1;
 			if(player_bullet_x != -1) {
 				player_bullet_y--;
 			}
@@ -625,6 +657,9 @@ void do_tick() {
 				enemyDir -= enemyDir * 2;
 				enemy_loc_off_y++;
 			}
+			
+			if(enemy_loc_off_y > 3)
+				game_over();
 			
 		}
 		
