@@ -40,6 +40,14 @@
 		
 	EXTERN toggle_paused
 		
+	EXTERN illuminate_red
+	EXTERN illuminate_blue
+	EXTERN illuminate_green
+	EXTERN illuminate_yellow
+	EXTERN illuminate_white
+	EXTERN illuminate_purple
+	EXTERN illuminate_reset
+		
 enemies = "////",0
 shields_alive = "////",0    
 shields_type = "////",0   
@@ -49,19 +57,22 @@ instructions = "Welcome to Space Invaders! The purpose of the game is to rack up
 lab7 	
 
 	STMFD sp!, {lr}
-
-	BL uart_init					;setup the uart with its init subroutine
+	
 	BL pin_connect_block_setup_for_uart0		;setup the pin connect block
+	BL uart_init					;setup the uart with its init subroutine
+
 	BL setup_pins					;setup pins required for momentary push button and seven segment display	
 	BL interrupt_init
 	
+	BL illuminate_reset
+	BL illuminate_purple
+	BL clear_display
+	BL toggle_seven_seg
+	
+	
 	B lab7_loop
 	
-	LDR r4, =instructions
-	BL output_string
-	
-	BL toggle_seven_seg
-	BL clear_display
+
 	
 ;check_game_start
 ;	BL read_character

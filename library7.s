@@ -15,6 +15,14 @@
 
 	EXPORT from_ascii
 	EXPORT number_to_memory
+		
+	EXPORT illuminate_red
+	EXPORT illuminate_green
+	EXPORT illuminate_blue
+	EXPORT illuminate_yellow
+	EXPORT illuminate_white
+	EXPORT illuminate_purple
+	EXPORT illuminate_reset
 	
 	EXPORT clear_input
 	EXPORT get_input
@@ -46,7 +54,7 @@ uart_init
 	MOV r1, #131			;copies decimal 131 into r1
 	STR r1, [r0]			;stores r1 into the memory address at r0
 	LDR r0, =0xE000C000		;loads the memory address 0xE000C000 into r0
-	MOV r1, #33			;copies decimal 120 into r1 / U0DLL
+	MOV r1, #1			;copies decimal 120 into r1 / U0DLL
 	STR r1, [r0]			;stores r1 into the memory address at r0
 	LDR r0, =0xE000C004		;loads the memory address 0xE000C004 into r0
 	MOV r1, #0			;copies decimal 0 into r1 / U0DLM
@@ -73,10 +81,27 @@ pin_connect_block_setup_for_uart0
 setup_pins
 	STMFD SP!,{lr, r1, r2, r3}
 
-	LDR r1, =0xE0028008			;IODIR for Seven-Seg
-	LDR r3, =0xB784				;Load 0xB784 (for bit manipulation) to r3
-	STR r3, [r1]				;store results to r1
+	LDR r1, =0xE002C004			;PINSEl1 -> r1
+	LDR r2, [r1]				;load contents to r2
+	MOV r3, #0x0				;copy #0 to r3
+	BIC r2, r2, r3				;bitclear r2 masked r3
+	STR r2, [r1]				;store results in r1
 
+	LDR r1, =0xE002C000			;PINSEL0 -> r1
+	LDR r2, [r1]				;Load contents to r2
+	MOV r3, #0xF00000			;copy 0xF00000 to r3
+	BIC r2, r2, r3				;bitclear r2 by mask r3
+	STR r2, [r1]				;store results in r1
+
+	LDR r1, =0xE0028008			;IODIR for Seven-Seg
+	;LDR r2, [r1]	
+	LDR r3, =0x26B784			;Load 0x26B784 (for bit manipulation) to r3
+	STR r3, [r1]				;store results to r1
+	
+	LDR r1, =0xE0028018			
+	LDR r3, =0xF0000
+	STR r3, [r1] 				;store contents 0xF0000 to memory at 0xE0028018
+	
 	LDMFD sp!, {lr, r1, r2, r3}
 	BX lr 
 
@@ -435,6 +460,92 @@ store_input
 	LDMFD SP!, {lr, r1-r5}
 	BX lr
 	
+	
+illuminate_red
+	STMFD SP!, {lr, r0, r1, r2}
+
+	LDR r0, =0xE002800C							;Load P0xCLR to r0
+	LDR r1, [r0]								;Load contents to r1
+	MOV r2, #0x2								;Copy 0x3 to r2
+	MOV r2, r2, LSL #16 						;Logical shift left r2 by 16
+	ORR r1, r1, r2								;Or r1 with r2
+	STR r1, [r0]								;Store result in r0
+
+	LDMFD SP!, {lr, r0, r1, r2}
+	BX lr
+
+
+illuminate_blue
+	STMFD SP!, {lr, r0, r1, r2}
+
+	LDR r0, =0xE002800C							;Load P0xCLR to r0
+	LDR r1, [r0]								;Load contents to r1
+	MOV r2, #0x4								;Mov 0x4 to r2
+	MOV r2, r2, LSL #16							;logical shift left r2 by 16
+	ORR r1, r1, r2								; or r1 with r2
+	STR r1, [r0]								; store result to r0
+
+	LDMFD SP!, {lr, r0, r1, r2}
+	BX lr
+
+
+illuminate_green
+	STMFD SP!, {lr, r0, r1, r2}
+
+	LDR r0, =0xE002800C							;Load P0xCLR to r0
+	LDR r1, [r0]								;Load contents to r1
+	MOV r2, #0x20								;Move 0x20 to r2 (to manipulate respective bits)
+	MOV r2, r2, LSL #16							;logical shift left r2 by 16
+	ORR r1, r1, r2								; or r1 with r2
+	STR r1, [r0]								; store its contents to r0
+
+	LDMFD SP!, {lr, r0, r1, r2}
+	BX lr
+
+illuminate_white
+	STMFD SP!, {lr}
+
+	LDR r0, =0xE002800C							;Load P0xCLR to r0
+	LDR r1, [r0]								; load its contents to r1
+	MOV r2, #0x26								;Move 0x26 to r2 (to manipulate bits in P0xCLR)
+	MOV r2, r2, LSL #16							;logical shift left by 16 on r2
+	ORR r1, r1, r2								; or r1 with r2
+	STR r1, [r0]								; store contents r0
+
+	LDMFD SP!, {lr}
+	BX lr
+
+illuminate_purple
+	STMFD SP!, {lr}
+	
+	BL illuminate_red
+	BL illuminate_blue
+
+	LDMFD SP!, {lr}
+	BX lr
+
+illuminate_yellow
+	STMFD SP!, {lr}
+	
+	BL illuminate_blue
+	BL illuminate_green
+
+	LDMFD SP!, {lr}
+	BX lr
+
+illuminate_reset
+	STMFD SP!, {lr, r0, r1, r2}
+
+	LDR r0, =0xE0028004							; load P0xSET -> r0
+	LDR r1, [r0]								; load its contents
+	MOV r2, #0x26								; 0x26 (respective bits to maniupulate in the P0xSET) -> r2
+	MOV r2, r2, LSL #16							; shift left 16 places
+	ORR r1, r1, r2								; or r1 with r2
+	STR r1, [r0]								; store results to r0
+
+	LDMFD SP!, {lr, r0, r1, r2}
+	BX lr
+
 number_to_memory
 	STMFD SP!, {lr}
 	;CMP r9, #0			;Compare r9 to 0

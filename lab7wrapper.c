@@ -1,4 +1,5 @@
 extern int lab7(void);
 int main() {
-	lab7();
+	lab7(); 
 }
+ 

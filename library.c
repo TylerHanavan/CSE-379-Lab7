@@ -3,8 +3,19 @@
 #include "structs.c"
 
 extern int output_character(char c);
+extern void illuminate_red();
+extern void illuminate_blue();
+extern void illuminate_green();
+extern void illuminate_yellow();
+extern void illuminate_white();
+extern void illuminate_purple();
+extern void illuminate_reset();
+
+int color_ticks = 0;
 
 int level = 0;
+
+int lives = 1;
 
 int player_x_ = 10;
 int player_y_ = 13;
@@ -22,8 +33,6 @@ int enemy_loc_off_x = 0;
 int enemy_loc_off_y = 0;
 int enemyDir = 0;
 
-int lives = 3;
-
 int score_level_ = 200;
 int score_total_;
 
@@ -39,6 +48,12 @@ int outputted = 0;
 
 int paused = 0;
 
+int enemy_movement = 800;
+
+int mothership_x = 0;
+
+int dead = 0;
+
 int is_paused() {
 	return paused;
 }
@@ -52,7 +67,7 @@ void toggle_paused() {
 }
 
 int is_playing() {
-	return gameState == 3;
+	return gameState == 3 && !dead;
 }
 
 int is_instructions() {
@@ -81,6 +96,7 @@ void pseudo_printf(char c[]) {
 void print_num(int n) {
 	
 	int b = 0;
+	int p = 0;
 	
 	for(int i = 4; i >= 0; i--) {
 		
@@ -97,6 +113,7 @@ void print_num(int n) {
 			b = 1;
 			n -= c;
 			r++;
+			p = 1;
 		}
 		
 		char v = to_ascii(r);
@@ -104,7 +121,80 @@ void print_num(int n) {
 		output_character(v);
 		
 	}
+	
+	if(p == 0 && b == 0)
+		output_character(0x30);
 
+}
+
+void led_high(int pin) {
+	
+	*(volatile unsigned *)(0xE002801C) = (0x1 << pin);
+	
+}
+
+void led_low(int pin) {
+	
+	*(volatile unsigned *)(0xE0028014) = (0x1 << pin);
+	
+}
+
+int get_enemy_alive(int loc){
+	if(loc == -1) return 0;
+	if(loc > 35) return 0;
+	if(loc > 30) return (enemies_top & (1 << (loc - 30))) > 0 ? 1 : 0;
+	return (enemies_bot & (1 << loc)) > 0 ? 1 : 0;
+}
+
+int enemies_cleared() {
+	
+	for(int i = 0; i < 35; i++)
+		if(get_enemy_alive(i) == 1) return 0;
+	
+	return 1;
+
+}
+
+int get_score_level(){ return score_level_; }
+
+void game_over() {
+	
+	illuminate_reset();
+	illuminate_purple();
+	
+	dead = 1;
+
+	output_character(0xC);
+
+	for(int i = 0; i < 20; i++) pseudo_printf("-\0");
+
+	pseudo_printf("\r\nYour score is: \0");
+	
+	print_num(get_score_level());
+
+	pseudo_printf(" | You made it to level: \0");
+	
+	print_num(level);
+
+	for(int i = 0; i < 20; i++) pseudo_printf("-\0");
+	
+}
+
+void set_lives() {
+	score_level_ -= 100;
+	if(lives == 3) {
+		led_low(16);
+	}
+	if(lives == 2) {
+		led_low(17);
+	}
+	if(lives == 1) {
+		led_low(18);
+	}
+	if(lives == 0) {
+		led_low(19);
+		game_over();
+	}
 }
 
 void set_score_level(int type){
@@ -113,7 +203,18 @@ void set_score_level(int type){
 	else score_level_ += 40;
 }
 
-int get_score_level(){ return score_level_; }
+void new_level() {
+	
+	level++;
+	
+	enemy_movement -= 5;
+	
+	enemies_top = 0xFFFFFFFF;
+	enemies_bot = enemies_top;
+	shields = enemies_bot;
+	shields_types = enemies_bot;
+	
+}
 
 int is_player(int x, int y) {
 	return player_x_ == x && player_y_ == y;
@@ -183,13 +284,6 @@ int get_enemy_from_coordinates(int x, int y) {
 	
 }
 
-int get_enemy_alive(int loc){
-	if(loc == -1) return 0;
-	if(loc > 35) return 0;
-	if(loc > 30) return (enemies_top & (1 << (loc - 30))) > 0 ? 1 : 0;
-	return (enemies_bot & (1 << loc)) > 0 ? 1 : 0;
-}
-
 int is_player_bullet(int x, int y) {
 	return x == player_bullet_x && y == player_bullet_y;
 }
@@ -218,6 +312,17 @@ void set_enemy_alive(int loc, int alive){
 
 int collides() {
 	
+	if(enemy_bullet_x == player_x_ && enemy_bullet_y == player_y_) {
+		
+		lives--;
+		
+		enemy_bullet_x = -1;
+		enemy_bullet_y = -1;
+		
+		set_lives();
+		
+	}
+	
 	if(is_shield(player_bullet_x, player_bullet_y)) {
 		int id = get_shield_from_coordinates(player_bullet_x, player_bullet_y);
 		if(is_shield_alive(id)){
@@ -231,8 +336,6 @@ int collides() {
 		}
 		return 1;
 	}
-	
-	
 	
 	if(is_shield(enemy_bullet_x, enemy_bullet_y)) {
 		int id = get_shield_from_coordinates(enemy_bullet_x, enemy_bullet_y);
@@ -254,6 +357,8 @@ int collides() {
 		  set_score_level(get_enemy_type(id));
 			player_bullet_x = -1;
 			player_bullet_y = -1;
+			if(enemies_cleared())
+				new_level();
 		return 1;
 	}
 	
@@ -325,7 +430,8 @@ void draw_board() {
 }
 
 void draw_intro() {
-	output_character(0xC);
+	if(dead == 0)
+		output_character(0xC);
 	if(gameState == 0) {
 		pseudo_printf("    Welcome to Micro Space Invaders\r\n\0");
 		pseudo_printf("This game is a simplified clone of Space Invaders.\r\n\0");
@@ -347,11 +453,14 @@ void draw_intro() {
 		pseudo_printf("will shoot as well as they slowly move closer to the player.\r\n\0");
 		pseudo_printf("Press [SPACE] now to advance through these instructions.\r\n\0");
 	}
+	if(gameState < 3) illuminate_white();
 	outputted = 1;
+	
 }
 
 void draw_paused() {
-
+	illuminate_reset();
+	illuminate_blue();
 	output_character(0xC);
 
 	for(int i = 0; i < 20; i++) pseudo_printf("-\0");
@@ -374,19 +483,41 @@ int enemy_can_shoot() {
 
 int get_enemy_open(int offset) {
 	
-	if(offset > 50)
+	if(offset > 10)
 		return -1;
 	
 	int loc = get_random(7, tick + offset);
 	
 	while(get_enemy_alive(loc) == 0) {
-		
+			
 		if(loc > 35)
 			return get_enemy_open(offset+1);
 			
+		loc += 7;
 	}
 	
 	return loc;
+	
+}
+
+void flash_red() {
+	
+	color_ticks = 20;
+	
+	illuminate_reset();
+	illuminate_red();
+	
+}
+
+void reset_color() {
+	
+	if(color_ticks != 0)
+		return;
+	
+	if(is_playing() == 1) {
+		illuminate_reset();
+		illuminate_green();
+	}
 	
 }
 
@@ -399,6 +530,8 @@ void enemy_shoot() {
 		
 	if(loc == -1)
 		return;
+	
+	flash_red();
 	
 	for(int j = 0; j < 21; j++) {
 		for(int i = 0; i < 15; i++) {
@@ -415,6 +548,7 @@ void shoot() {
 	if(player_bullet_x == -1) {
 		player_bullet_x = player_x_;
 		player_bullet_y = player_y_ -1;
+		flash_red();
 	}
 }
 
@@ -451,6 +585,9 @@ void do_tick() {
 
 	}
 	
+	color_ticks--;
+	reset_color();
+	
 	if(is_playing()) {
 		
 		if(enemyDir == 0) {
@@ -464,29 +601,31 @@ void do_tick() {
 		if(player_x_ > 19) player_x_ = 19;
 		
 		if(tick % 10 == 0) {
+			if(tick % 500 == 0) {
+				enemy_shoot();
+			}
 			if(player_bullet_x != -1) {
 				player_bullet_y--;
 			}
 			if(enemy_bullet_x != -1) {
 				enemy_bullet_y++;
 			}
-			enemy_shoot();
-			collides();
 			draw_board();
+			collides();
 			player_x_ += next_x_;
 		
-			if(tick % 50 == 0) {
-				
-				enemy_loc_off_x += enemyDir;
-			
-				if(enemy_loc_off_x > 5 || enemy_loc_off_x < -5) {
-					enemyDir -= enemyDir * 2;
-					enemy_loc_off_y++;
-				}
-				
-			}
-		
 			next_x_ = 0;
+		}
+		
+		if(tick % enemy_movement == 0) {
+			
+			enemy_loc_off_x += enemyDir;
+		
+			if(enemy_loc_off_x > 5 || enemy_loc_off_x < -5) {
+				enemyDir -= enemyDir * 2;
+				enemy_loc_off_y++;
+			}
+			
 		}
 		
 	}
@@ -494,9 +633,6 @@ void do_tick() {
 	if(is_instructions() && !outputted) {
 		draw_intro();
 	}
-	
-	if(tick > 100000)
-		tick = 0;
 	
 }
 
